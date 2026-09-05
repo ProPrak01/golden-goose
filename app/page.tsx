@@ -1,4 +1,15 @@
-export default function HomePage() {
+import { listActiveMemories } from '@/server/memory/list-memories';
+
+export const dynamic = 'force-dynamic';
+
+function formatSourceDate(occurredAt: string | null | undefined) {
+  if (!occurredAt) return 'date unavailable';
+  return new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(occurredAt));
+}
+
+export default async function HomePage() {
+  const memories = await listActiveMemories();
+
   return (
     <main className="shell">
       <header className="topbar">
@@ -27,6 +38,42 @@ export default function HomePage() {
             Ask Kivi <span>→</span>
           </button>
         </div>
+      </section>
+      <section className="memory-timeline" aria-labelledby="memory-title">
+        <div className="section-heading">
+          <div>
+            <p className="status">Live memory</p>
+            <h2 id="memory-title">What Kivi can currently use.</h2>
+          </div>
+          <p>{memories.length} active</p>
+        </div>
+        {memories.length === 0 ? (
+          <p className="empty-state">
+            No supported memories yet. Kivi will wait for explicit evidence.
+          </p>
+        ) : (
+          <ul className="memory-list">
+            {memories.map((memory) => {
+              const evidence = memory.memory_evidence[0];
+              const transcript = evidence?.transcripts;
+
+              return (
+                <li key={memory.id}>
+                  <div>
+                    <p className="memory-type">{memory.memory_type}</p>
+                    <h3>{memory.canonical_statement}</h3>
+                    <p className="memory-source">
+                      Evidence: “{evidence?.excerpt ?? 'No excerpt available'}” ·{' '}
+                      {transcript?.source_app ?? 'Unknown source'} ·{' '}
+                      {formatSourceDate(transcript?.occurred_at)}
+                    </p>
+                  </div>
+                  <p className="confidence">{Math.round(memory.confidence * 100)}% supported</p>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
       <section className="grid">
         <article>

@@ -6,4 +6,5 @@ test('shows the Hey Kivi workspace', async ({ page }) => {
     page.getByRole('heading', { name: 'What deserves your attention today?' }),
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Ask Kivi →' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'What Kivi can currently use.' })).toBeVisible();
 });

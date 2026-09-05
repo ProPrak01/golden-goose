@@ -78,6 +78,66 @@ body {
   gap: 2rem;
   padding: 2rem;
 }
+.memory-timeline {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: rgb(255 255 255 / 60%);
+  box-shadow: 0 1rem 3rem rgb(34 79 31 / 7%);
+}
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+}
+.section-heading > p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+.memory-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.memory-list li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.1rem;
+  border-radius: 0.85rem;
+  background: #eff7e7;
+}
+.memory-type,
+.confidence {
+  margin-bottom: 0.4rem;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.memory-list h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+.memory-source,
+.empty-state {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.confidence {
+  flex: 0 0 auto;
+  margin: 0;
+  text-align: right;
+}
 .ask-card h2,
 .grid h2 {
   margin: 0.5rem 0 0;
@@ -204,6 +264,15 @@ h2 {
   .ask-card,
   .grid {
     grid-template-columns: 1fr;
+  }
+  .memory-list li,
+  .section-heading {
+    display: block;
+  }
+  .confidence,
+  .section-heading > p {
+    margin-top: 0.75rem;
+    text-align: left;
   }
   .topbar {
     gap: 0.8rem;
