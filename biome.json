@@ -10,6 +10,7 @@
       "preset": "recommended",
       "correctness": { "noUnusedVariables": "error" },
       "complexity": { "useLiteralKeys": "off" },
+      "style": { "noDescendingSpecificity": "off" },
       "suspicious": { "noExplicitAny": "error" }
     }
   },
