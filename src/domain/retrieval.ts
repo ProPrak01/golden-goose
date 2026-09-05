@@ -11,6 +11,22 @@ export type RetrievalResult =
   | { kind: 'selected'; candidates: RetrievalCandidate[]; rationale: string }
   | { kind: 'abstain'; candidates: []; rationale: string };
 
+const planningTerms = new Set(['action', 'do', 'help', 'next', 'plan', 'should', 'today']);
+
+function tokenize(value: string) {
+  return value.toLocaleLowerCase().match(/[a-z0-9]+/g) ?? [];
+}
+
+export function scoreLexicalRelevance(query: string, statement: string) {
+  const queryTerms = new Set(tokenize(query));
+  const statementTerms = new Set(tokenize(statement));
+  const sharedTerms = [...queryTerms].filter((term) => statementTerms.has(term));
+
+  if (sharedTerms.length > 0) return sharedTerms.length / queryTerms.size;
+  if ([...queryTerms].some((term) => planningTerms.has(term))) return 0.01;
+  return 0;
+}
+
 export function selectGroundedMemories(candidates: readonly RetrievalCandidate[]): RetrievalResult {
   const selected = [...candidates]
     .filter(

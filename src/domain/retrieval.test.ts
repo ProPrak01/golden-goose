@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { selectGroundedMemories } from '@/domain/retrieval';
+import { scoreLexicalRelevance, selectGroundedMemories } from '@/domain/retrieval';
 
 describe('grounded retrieval', () => {
   it('excludes stale and unsupported memories', () => {
@@ -36,5 +36,17 @@ describe('grounded retrieval', () => {
 
   it('abstains when there is no grounded support', () => {
     expect(selectGroundedMemories([])).toMatchObject({ kind: 'abstain' });
+  });
+
+  it('keeps broad planning requests grounded in evidenced active memory', () => {
+    expect(
+      scoreLexicalRelevance('What should I do today?', 'Controls assignment due Friday.'),
+    ).toBe(0.01);
+  });
+
+  it('does not manufacture relevance for an unrelated factual question', () => {
+    expect(
+      scoreLexicalRelevance('What is my home address?', 'Controls assignment due Friday.'),
+    ).toBe(0);
   });
 });
