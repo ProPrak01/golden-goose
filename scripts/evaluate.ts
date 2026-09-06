@@ -1,1 +1,3 @@
-console.info('Phase 0: evaluation cases begin with the Phase 1 domain model.');
+import { runEvaluation } from '@/evaluation/run-evaluation';
+
+console.info(JSON.stringify(runEvaluation(), null, 2));
