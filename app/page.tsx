@@ -61,6 +61,12 @@ export default async function HomePage() {
                       {formatSourceDate(transcript?.occurred_at)}
                     </p>
                     <MemoryControlButton action="soft_expire" memoryId={memory.id} />
+                    <Link
+                      className="memory-control"
+                      href={`/memories/${memory.id}/correct` as Route}
+                    >
+                      Correct memory
+                    </Link>
                   </div>
                   <p className="confidence">{Math.round(memory.confidence * 100)}% supported</p>
                 </li>

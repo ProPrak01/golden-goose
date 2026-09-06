@@ -142,6 +142,19 @@ body {
 .memory-control:disabled {
   cursor: wait;
 }
+.memory-control + .memory-control {
+  margin-left: 1rem;
+}
+.previous-memory {
+  max-width: 48rem;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--accent);
+  background: #eff7e7;
+}
+.previous-memory > p:last-child {
+  margin: 0.35rem 0 0;
+  font-weight: 700;
+}
 .capture-shell {
   align-content: start;
 }
