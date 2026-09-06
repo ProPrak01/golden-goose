@@ -4,6 +4,7 @@ export type RetrievalCandidate = {
   status: 'active' | 'soft_expired' | 'superseded' | 'deleted';
   confidence: number;
   lexicalScore: number;
+  semanticScore?: number;
   evidenceCount: number;
 };
 
@@ -31,12 +32,17 @@ export function selectGroundedMemories(candidates: readonly RetrievalCandidate[]
   const selected = [...candidates]
     .filter(
       (candidate) =>
-        candidate.status === 'active' &&
-        candidate.confidence >= 0.7 &&
-        candidate.evidenceCount > 0 &&
-        candidate.lexicalScore > 0,
+        (candidate.status === 'active' &&
+          candidate.confidence >= 0.7 &&
+          candidate.evidenceCount > 0 &&
+          candidate.lexicalScore > 0) ||
+        (candidate.semanticScore ?? 0) > 0.2,
     )
-    .sort((left, right) => right.lexicalScore - left.lexicalScore)
+    .sort(
+      (left, right) =>
+        Math.max(right.lexicalScore, right.semanticScore ?? 0) -
+        Math.max(left.lexicalScore, left.semanticScore ?? 0),
+    )
     .slice(0, 5);
 
   if (selected.length === 0) {
@@ -50,6 +56,7 @@ export function selectGroundedMemories(candidates: readonly RetrievalCandidate[]
   return {
     kind: 'selected',
     candidates: selected,
-    rationale: 'Selected active memories with explicit evidence and relevant retrieval scores.',
+    rationale:
+      'Selected active memories with explicit evidence and relevant lexical or semantic scores.',
   };
 }

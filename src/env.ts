@@ -5,6 +5,7 @@ const serverEnvironmentSchema = z.object({
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   LLM_PROVIDER: z.enum(['deterministic', 'openai']).default('deterministic'),
+  EMBEDDING_PROVIDER: z.enum(['deterministic', 'openai']).default('deterministic'),
   OPENAI_API_KEY: z.string().min(1).optional(),
 });
 

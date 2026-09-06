@@ -2,6 +2,7 @@ import { canTransitionMemory, memoryStatusSchema } from '@/domain/memory';
 import type { MemoryCorrectionInput } from '@/schemas/memory-correction';
 import { getDatabaseClient } from '@/server/database/client';
 import { RepositoryError } from '@/server/database/errors';
+import { createTextEmbedding, toPgVector } from '@/server/embeddings/provider';
 
 export async function correctMemory(memoryId: string, input: MemoryCorrectionInput) {
   const database = getDatabaseClient();
@@ -32,6 +33,7 @@ export async function correctMemory(memoryId: string, input: MemoryCorrectionInp
   if (transcriptError)
     throw new RepositoryError('record correction transcript', transcriptError.message);
 
+  const embedding = await createTextEmbedding(input.canonicalStatement);
   const { data: correctedMemory, error: correctedMemoryError } = await database
     .from('memories')
     .insert({
@@ -40,6 +42,10 @@ export async function correctMemory(memoryId: string, input: MemoryCorrectionInp
       subject_key: memory.subject_key,
       canonical_statement: input.canonicalStatement,
       confidence: memory.confidence,
+      embedding: embedding ? toPgVector(embedding.vector) : null,
+      embedding_provider: embedding?.provider ?? null,
+      embedding_model: embedding?.model ?? null,
+      embedding_updated_at: embedding ? new Date().toISOString() : null,
     })
     .select('id')
     .single();

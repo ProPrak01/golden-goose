@@ -89,6 +89,10 @@ export type Database = {
           canonical_statement: string;
           confidence: number;
           created_at: string;
+          embedding: string | null;
+          embedding_model: string | null;
+          embedding_provider: string | null;
+          embedding_updated_at: string | null;
           expires_at: string | null;
           id: string;
           last_confirmed_at: string;
@@ -104,6 +108,10 @@ export type Database = {
           canonical_statement: string;
           confidence: number;
           created_at?: string;
+          embedding?: string | null;
+          embedding_model?: string | null;
+          embedding_provider?: string | null;
+          embedding_updated_at?: string | null;
           expires_at?: string | null;
           id?: string;
           last_confirmed_at?: string;
@@ -119,6 +127,10 @@ export type Database = {
           canonical_statement?: string;
           confidence?: number;
           created_at?: string;
+          embedding?: string | null;
+          embedding_model?: string | null;
+          embedding_provider?: string | null;
+          embedding_updated_at?: string | null;
           expires_at?: string | null;
           id?: string;
           last_confirmed_at?: string;
@@ -370,7 +382,13 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      match_memory_embeddings: {
+        Args: { match_count?: number; query_embedding: string };
+        Returns: {
+          id: string;
+          similarity: number;
+        }[];
+      };
     };
     Enums: {
       assistant_outcome: 'answered' | 'clarified' | 'abstained' | 'tool_called';

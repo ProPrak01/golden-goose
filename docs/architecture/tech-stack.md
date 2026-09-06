@@ -9,7 +9,8 @@
 | Runtime and package manager | Bun, with exact versions pinned in the lockfile |
 | Styling | Tailwind CSS and a small custom component system |
 | Database platform | Local Supabase backed by PostgreSQL |
-| Database capabilities | PostgreSQL full-text search, structured metadata filtering, and pgvector only where evaluation supports it |
+| Database capabilities | PostgreSQL structured metadata filtering and pgvector cosine similarity for opt-in hybrid retrieval |
+| Embeddings | Optional OpenAI `text-embedding-3-small`; deterministic lexical fallback when no key/provider is configured |
 | Local infrastructure | Docker-compatible runtime and Supabase CLI |
 | Database workflow | Versioned migrations, reproducible seeds, generated database types, and local Studio inspection |
 | Runtime validation | Zod at data-import, API, and model-output boundaries |
@@ -25,7 +26,7 @@
 - Keep domain policy separate from UI and provider integrations so memory decisions are testable without a model call.
 - Treat every external/model input as untrusted until validated by Zod.
 - Record provenance, model/version metadata, latency, usage, and decision reasons with each consequential run.
-- Prefer metadata and full-text retrieval first; introduce vector retrieval only when it improves measured outcomes.
+- Keep lexical retrieval as a deterministic fallback and use vector similarity only alongside active-status, confidence, and evidence gates.
 - Use Supabase services only where they advance product reliability, inspection, retrieval, or reproducibility.
 
 ## Deliberately out of scope for the first version

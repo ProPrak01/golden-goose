@@ -2,6 +2,7 @@ import type { Json } from '@/generated/database.types';
 import type { MemoryCandidate, MemoryDecision } from '@/domain/memory';
 import { getDatabaseClient } from '@/server/database/client';
 import { RepositoryError } from '@/server/database/errors';
+import { createTextEmbedding, toPgVector } from '@/server/embeddings/provider';
 
 export async function recordMemoryDecision(input: {
   candidate: MemoryCandidate;
@@ -13,6 +14,7 @@ export async function recordMemoryDecision(input: {
   let memoryId: string | null = null;
 
   if (input.decision.kind === 'accept') {
+    const embedding = await createTextEmbedding(input.candidate.canonicalStatement);
     const { data, error } = await database
       .from('memories')
       .insert({
@@ -20,6 +22,10 @@ export async function recordMemoryDecision(input: {
         status: input.decision.nextStatus,
         canonical_statement: input.candidate.canonicalStatement,
         confidence: input.candidate.confidence,
+        embedding: embedding ? toPgVector(embedding.vector) : null,
+        embedding_provider: embedding?.provider ?? null,
+        embedding_model: embedding?.model ?? null,
+        embedding_updated_at: embedding ? new Date().toISOString() : null,
       })
       .select('id')
       .single();

@@ -22,6 +22,17 @@ bun run eval
 bun run check
 ```
 
+## Optional semantic retrieval
+
+The default local setup uses deterministic lexical retrieval and requires no external credential. To enable pgvector-backed hybrid retrieval for newly captured memories, set these server-only values in `.env.local` before seeding or capturing data:
+
+```bash
+EMBEDDING_PROVIDER=openai
+OPENAI_API_KEY=your_key_here
+```
+
+The application stores the resulting `text-embedding-3-small` vector on the memory record and uses the local `match_memory_embeddings` cosine-similarity function alongside lexical relevance. Existing records remain retrievable through the deterministic fallback until they are re-captured or corrected.
+
 ## Required final documentation
 
 `RUN.md` will state:

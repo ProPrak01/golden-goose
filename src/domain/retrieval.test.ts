@@ -49,4 +49,20 @@ describe('grounded retrieval', () => {
       scoreLexicalRelevance('What is my home address?', 'Controls assignment due Friday.'),
     ).toBe(0);
   });
+
+  it('allows a supported semantic match when lexical terms do not overlap', () => {
+    const result = selectGroundedMemories([
+      {
+        id: 'semantic',
+        statement: 'The Controls assignment is due Friday.',
+        status: 'active',
+        confidence: 0.9,
+        lexicalScore: 0,
+        semanticScore: 0.82,
+        evidenceCount: 1,
+      },
+    ]);
+
+    expect(result).toMatchObject({ kind: 'selected' });
+  });
 });
