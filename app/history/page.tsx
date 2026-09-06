@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Route } from 'next';
 import { listDecisionHistory } from '@/server/memory/list-decision-history';
 
 export const dynamic = 'force-dynamic';
@@ -19,7 +20,7 @@ export default async function HistoryPage() {
           kivi<span>.</span>
         </Link>
         <p>Decision history</p>
-        <Link href="/capture">Capture memory</Link>
+        <Link href={'/evaluation' as Route}>Evaluation</Link>
       </header>
       <section className="hero">
         <p className="eyebrow">Inspectable memory</p>
