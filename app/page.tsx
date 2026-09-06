@@ -83,9 +83,9 @@ export default async function HomePage() {
           <p className="status">Inspection</p>
           <h2>Every decision has a trail.</h2>
           <p>Transcript → evidence → memory → retrieval → response.</p>
-          <button type="button" className="quiet">
+          <Link className="quiet" href={'/history' as Route}>
             Open decision history
-          </button>
+          </Link>
         </article>
       </section>
     </main>

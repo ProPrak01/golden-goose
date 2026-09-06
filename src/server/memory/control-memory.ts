@@ -12,7 +12,7 @@ export async function controlMemory(memoryId: string, input: MemoryControlInput)
   const database = getDatabaseClient();
   const { data: memory, error: memoryError } = await database
     .from('memories')
-    .select('id, status')
+    .select('id, status, memory_evidence(transcript_id)')
     .eq('id', memoryId)
     .maybeSingle();
   if (memoryError) throw new RepositoryError('load memory for control', memoryError.message);
@@ -35,8 +35,10 @@ export async function controlMemory(memoryId: string, input: MemoryControlInput)
 
   const detail = input.detail || `User marked this memory as ${nextStatus}.`;
   const decisionKind = input.action === 'delete' ? 'deleted' : 'soft_expired';
+  const transcriptId = memory.memory_evidence[0]?.transcript_id ?? null;
   const { error: decisionError } = await database.from('memory_decisions').insert({
     memory_id: memoryId,
+    transcript_id: transcriptId,
     kind: decisionKind,
     reason: detail,
   });
