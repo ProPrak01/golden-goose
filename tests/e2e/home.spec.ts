@@ -7,6 +7,7 @@ test('shows the Hey Kivi workspace', async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Ask Kivi →' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What Kivi can currently use.' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'No longer relevant' })).toBeVisible();
   await page.getByLabel('Your question').fill('What should I do today? Tell me the next action.');
   const response = page.waitForResponse('**/api/hey-kivi');
   await page.getByRole('button', { name: 'Ask Kivi →' }).click();

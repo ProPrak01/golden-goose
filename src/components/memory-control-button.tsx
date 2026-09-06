@@ -1,0 +1,39 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+type MemoryControlAction = 'soft_expire' | 'delete';
+
+export function MemoryControlButton({
+  action,
+  memoryId,
+}: {
+  action: MemoryControlAction;
+  memoryId: string;
+}) {
+  const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
+  const label = action === 'soft_expire' ? 'No longer relevant' : 'Delete memory';
+
+  async function applyControl() {
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/memories/${memoryId}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action }),
+      });
+      if (!response.ok) throw new Error('Memory control request failed.');
+      router.refresh();
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  return (
+    <button type="button" className="memory-control" onClick={applyControl} disabled={isSaving}>
+      {isSaving ? 'Saving…' : label}
+    </button>
+  );
+}

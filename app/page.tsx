@@ -1,5 +1,6 @@
 import { listActiveMemories } from '@/server/memory/list-memories';
 import { AskKiviCard } from '@/components/ask-kivi-card';
+import { MemoryControlButton } from '@/components/memory-control-button';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,6 +58,7 @@ export default async function HomePage() {
                       {transcript?.source_app ?? 'Unknown source'} ·{' '}
                       {formatSourceDate(transcript?.occurred_at)}
                     </p>
+                    <MemoryControlButton action="soft_expire" memoryId={memory.id} />
                   </div>
                   <p className="confidence">{Math.round(memory.confidence * 100)}% supported</p>
                 </li>
