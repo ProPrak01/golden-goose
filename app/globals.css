@@ -39,12 +39,17 @@ body {
   margin: 0 auto 0 0;
 }
 .topbar button,
+.topbar a,
 .quiet {
   border: 0;
   background: transparent;
   color: var(--ink);
   font: inherit;
   cursor: pointer;
+}
+.topbar a:not(.brand) {
+  color: var(--ink);
+  text-decoration: none;
 }
 .brand {
   margin: 0;
@@ -136,6 +141,68 @@ body {
 }
 .memory-control:disabled {
   cursor: wait;
+}
+.capture-shell {
+  align-content: start;
+}
+.capture-form {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 48rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: rgb(255 255 255 / 60%);
+  box-shadow: 0 1rem 3rem rgb(34 79 31 / 7%);
+}
+.capture-form label {
+  font-weight: 800;
+}
+.capture-form textarea,
+.capture-form select,
+.capture-form input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+.capture-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  margin-top: 0.5rem;
+}
+.capture-policy,
+.capture-message,
+.proposal-result > p:not(.status) {
+  margin: 0.5rem 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.capture-form > button,
+.proposal-result button {
+  margin-top: 0.5rem;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 0.65rem;
+  background: var(--ink);
+  color: white;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.proposal-result {
+  margin-top: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: #eff7e7;
+}
+.proposal-result h2 {
+  margin-top: 0.4rem;
 }
 .memory-list h3 {
   margin: 0 0 0.5rem;
@@ -335,6 +402,9 @@ h2 {
   .memory-list li,
   .section-heading {
     display: block;
+  }
+  .capture-fields {
+    grid-template-columns: 1fr;
   }
   .confidence,
   .section-heading > p {

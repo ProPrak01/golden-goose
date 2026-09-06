@@ -1,6 +1,8 @@
 import { listActiveMemories } from '@/server/memory/list-memories';
 import { AskKiviCard } from '@/components/ask-kivi-card';
 import { MemoryControlButton } from '@/components/memory-control-button';
+import Link from 'next/link';
+import type { Route } from 'next';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +21,7 @@ export default async function HomePage() {
           kivi<span>.</span>
         </p>
         <p>Today</p>
-        <button type="button">Memory</button>
+        <Link href={'/capture' as Route}>Capture memory</Link>
       </header>
       <section className="hero">
         <p className="eyebrow">Hey Kivi · academic continuity</p>
