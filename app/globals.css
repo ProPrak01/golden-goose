@@ -148,8 +148,31 @@ body {
   background: #eff7e7;
   color: var(--muted);
 }
+.ask-note,
+.composer label,
 .composer p {
   line-height: 1.45;
+}
+.ask-note {
+  margin: 1rem 0 0;
+  color: var(--muted);
+}
+.composer label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+}
+.composer textarea {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid #bfd2a6;
+  border-radius: 0.65rem;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.4;
+  resize: vertical;
 }
 .composer button {
   width: 100%;
@@ -162,8 +185,37 @@ body {
   font-weight: 700;
   cursor: pointer;
 }
+.composer button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
 .composer span {
   float: right;
+}
+.assistant-result {
+  min-height: 0;
+  margin-top: 1rem;
+  color: var(--ink);
+  line-height: 1.45;
+}
+.assistant-result > p:last-child {
+  margin-bottom: 0;
+}
+.result-outcome,
+.result-source {
+  margin-bottom: 0.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.result-outcome {
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.assistant-error {
+  margin-bottom: 0;
+  color: #a32d22;
 }
 .grid {
   display: grid;

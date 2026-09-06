@@ -1,4 +1,5 @@
 import { listActiveMemories } from '@/server/memory/list-memories';
+import { AskKiviCard } from '@/components/ask-kivi-card';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,18 +28,7 @@ export default async function HomePage() {
           relied on.
         </p>
       </section>
-      <section className="ask-card" aria-labelledby="ask-title">
-        <div>
-          <p className="status">Ask Hey Kivi</p>
-          <h2 id="ask-title">Give me the next best academic action.</h2>
-        </div>
-        <div className="composer">
-          <p>When transcript memory is connected, your grounded answer will appear here.</p>
-          <button type="button">
-            Ask Kivi <span>→</span>
-          </button>
-        </div>
-      </section>
+      <AskKiviCard />
       <section className="memory-timeline" aria-labelledby="memory-title">
         <div className="section-heading">
           <div>
