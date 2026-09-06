@@ -41,3 +41,14 @@ bun run check
 ## Clean-review acceptance test
 
 Before submission, a clean environment must be able to install dependencies, start infrastructure, reset and seed the database, run the application, import a corpus, inspect memory state, run evaluation, view reports, and reset again without undocumented intervention.
+## Local data
+
+Start local Supabase, reset the schema, then load the deterministic fixtures:
+
+```bash
+bun run infra:start
+bun run db:reset
+bun run seed
+```
+
+The seed creates one supported deadline memory and one deliberately rejected inferred-trait case. This lets reviewers inspect both the accepted evidence path and the safety boundary.
