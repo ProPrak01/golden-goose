@@ -2,8 +2,9 @@ import { planAssistantResponse } from '@/domain/assistant';
 import { selectGroundedMemories } from '@/domain/retrieval';
 import { getDatabaseClient } from '@/server/database/client';
 import { listRetrievalCandidates } from '@/server/memory/retrieval-repository';
+import { evaluationFixtureSubjectKey } from '@/server/memory/scopes';
 
-const subjectKey = 'evaluation-fixture-v1';
+const subjectKey = evaluationFixtureSubjectKey;
 
 type FixtureMemory = {
   statement: string;
@@ -161,7 +162,9 @@ export async function runDatabaseEvaluation() {
   const results = await Promise.all(
     cases.map(async (testCase) => {
       const startedAt = performance.now();
-      const retrieval = selectGroundedMemories(await listRetrievalCandidates(testCase.request));
+      const retrieval = selectGroundedMemories(
+        await listRetrievalCandidates(testCase.request, { includeEvaluationFixtures: true }),
+      );
       const plan = planAssistantResponse(testCase.request, retrieval);
       const selectedIds =
         retrieval.kind === 'selected' ? retrieval.candidates.map(({ id }) => id) : [];

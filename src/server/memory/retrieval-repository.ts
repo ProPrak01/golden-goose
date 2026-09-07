@@ -3,6 +3,11 @@ import { scoreLexicalRelevance } from '@/domain/retrieval';
 import { getDatabaseClient } from '@/server/database/client';
 import { RepositoryError } from '@/server/database/errors';
 import { createTextEmbedding, toPgVector } from '@/server/embeddings/provider';
+import { evaluationFixtureSubjectKey } from '@/server/memory/scopes';
+
+type RetrievalOptions = {
+  includeEvaluationFixtures?: boolean;
+};
 
 async function getSemanticScores(query: string) {
   const embedding = await createTextEmbedding(query);
@@ -16,12 +21,19 @@ async function getSemanticScores(query: string) {
   return new Map(data.map((match) => [match.id, match.similarity]));
 }
 
-export async function listRetrievalCandidates(query: string): Promise<RetrievalCandidate[]> {
+export async function listRetrievalCandidates(
+  query: string,
+  { includeEvaluationFixtures = false }: RetrievalOptions = {},
+): Promise<RetrievalCandidate[]> {
   const semanticScores = await getSemanticScores(query);
-  const { data, error } = await getDatabaseClient()
+  let queryBuilder = getDatabaseClient()
     .from('memories')
     .select('id, canonical_statement, confidence, status, memory_evidence(id)')
     .eq('status', 'active');
+  if (!includeEvaluationFixtures) {
+    queryBuilder = queryBuilder.neq('subject_key', evaluationFixtureSubjectKey);
+  }
+  const { data, error } = await queryBuilder;
   if (error) throw new RepositoryError('list retrieval candidates', error.message);
 
   return data.map((memory) => {
