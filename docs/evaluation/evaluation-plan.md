@@ -49,7 +49,7 @@ Each result must retain:
 
 `bun run eval` runs the versioned baseline corpus and prints a machine-readable report. The current cases validate grounded fact retrieval, general planning with supported evidence, soft-expired and superseded memory exclusion, weak-evidence exclusion, unrelated-request abstention, ambiguous-request clarification, and inferred-trait rejection.
 
-This is intentionally a deterministic safety baseline. The next evaluation expansion will run the same contract against persisted local-Supabase fixtures and report database-backed latency and storage measurements.
+This deterministic safety baseline is complemented by the database-backed contract below, which runs the same retrieval policy against persisted local-Supabase fixtures and reports per-case database retrieval latency.
 
 ## Development corpus
 
