@@ -17,6 +17,14 @@ export function MemoryControlButton({
   const label = action === 'soft_expire' ? 'No longer relevant' : 'Delete memory';
 
   async function applyControl() {
+    if (
+      action === 'delete' &&
+      !globalThis.confirm(
+        'Delete this memory permanently? Its source transcript will remain in the audit trail.',
+      )
+    ) {
+      return;
+    }
     setIsSaving(true);
     try {
       const response = await fetch(`/api/memories/${memoryId}`, {
@@ -32,7 +40,12 @@ export function MemoryControlButton({
   }
 
   return (
-    <button type="button" className="memory-control" onClick={applyControl} disabled={isSaving}>
+    <button
+      type="button"
+      className={`memory-control${action === 'delete' ? ' memory-control-danger' : ''}`}
+      onClick={applyControl}
+      disabled={isSaving}
+    >
       {isSaving ? 'Saving…' : label}
     </button>
   );

@@ -145,6 +145,9 @@ body {
 .memory-control + .memory-control {
   margin-left: 1rem;
 }
+.memory-control-danger {
+  color: #a32d22;
+}
 .previous-memory {
   max-width: 48rem;
   padding: 1rem 1.25rem;

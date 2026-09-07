@@ -67,6 +67,7 @@ export default async function HomePage() {
                     >
                       Correct memory
                     </Link>
+                    <MemoryControlButton action="delete" memoryId={memory.id} />
                   </div>
                   <p className="confidence">{Math.round(memory.confidence * 100)}% supported</p>
                 </li>
