@@ -13,9 +13,25 @@ export type RetrievalResult =
   | { kind: 'abstain'; candidates: []; rationale: string };
 
 const planningTerms = new Set(['action', 'do', 'help', 'next', 'plan', 'should', 'today']);
+const nonDiscriminatingTerms = new Set([
+  'a',
+  'an',
+  'are',
+  'due',
+  'i',
+  'is',
+  'my',
+  'the',
+  'was',
+  'were',
+  'what',
+  'when',
+]);
 
 function tokenize(value: string) {
-  return value.toLocaleLowerCase().match(/[a-z0-9]+/g) ?? [];
+  return (value.toLocaleLowerCase().match(/[a-z0-9]+/g) ?? []).filter(
+    (term) => !nonDiscriminatingTerms.has(term),
+  );
 }
 
 export function scoreLexicalRelevance(query: string, statement: string) {
@@ -24,7 +40,11 @@ export function scoreLexicalRelevance(query: string, statement: string) {
   const sharedTerms = [...queryTerms].filter((term) => statementTerms.has(term));
 
   if (sharedTerms.length > 0) return sharedTerms.length / queryTerms.size;
-  if ([...queryTerms].some((term) => planningTerms.has(term))) return 0.01;
+  if (
+    (query.toLocaleLowerCase().match(/[a-z0-9]+/g) ?? []).some((term) => planningTerms.has(term))
+  ) {
+    return 0.01;
+  }
   return 0;
 }
 
@@ -32,11 +52,10 @@ export function selectGroundedMemories(candidates: readonly RetrievalCandidate[]
   const selected = [...candidates]
     .filter(
       (candidate) =>
-        (candidate.status === 'active' &&
-          candidate.confidence >= 0.7 &&
-          candidate.evidenceCount > 0 &&
-          candidate.lexicalScore > 0) ||
-        (candidate.semanticScore ?? 0) > 0.2,
+        candidate.status === 'active' &&
+        candidate.confidence >= 0.7 &&
+        candidate.evidenceCount > 0 &&
+        (candidate.lexicalScore > 0 || (candidate.semanticScore ?? 0) > 0.2),
     )
     .sort(
       (left, right) =>

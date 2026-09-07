@@ -50,6 +50,15 @@ describe('grounded retrieval', () => {
     ).toBe(0);
   });
 
+  it('does not treat generic deadline language as a memory match', () => {
+    expect(
+      scoreLexicalRelevance(
+        'When is the planetary report due?',
+        'The Controls assignment is due Friday.',
+      ),
+    ).toBe(0);
+  });
+
   it('allows a supported semantic match when lexical terms do not overlap', () => {
     const result = selectGroundedMemories([
       {
@@ -64,5 +73,21 @@ describe('grounded retrieval', () => {
     ]);
 
     expect(result).toMatchObject({ kind: 'selected' });
+  });
+
+  it('still excludes a stale memory with a high semantic score', () => {
+    expect(
+      selectGroundedMemories([
+        {
+          id: 'stale-semantic',
+          statement: 'Old deadline.',
+          status: 'soft_expired',
+          confidence: 0.99,
+          lexicalScore: 0,
+          semanticScore: 0.99,
+          evidenceCount: 1,
+        },
+      ]),
+    ).toMatchObject({ kind: 'abstain' });
   });
 });

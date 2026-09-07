@@ -28,6 +28,7 @@
     "db:types": "supabase gen types typescript --local > src/generated/database.types.ts",
     "seed": "tsx --conditions=react-server scripts/seed.ts",
     "eval": "tsx scripts/evaluate.ts",
+    "eval:database": "tsx --conditions=react-server scripts/evaluate-database.ts",
     "check": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run build"
   },
   "devDependencies": {
