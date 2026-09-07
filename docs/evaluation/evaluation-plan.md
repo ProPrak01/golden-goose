@@ -51,6 +51,14 @@ Each result must retain:
 
 This is intentionally a deterministic safety baseline. The next evaluation expansion will run the same contract against persisted local-Supabase fixtures and report database-backed latency and storage measurements.
 
+## Development corpus
+
+`bun run corpus:import` recreates a versioned 500-record development corpus through the real ingestion
+pipeline. It includes 390 explicit, supportable memories, 40 low-confidence details requiring
+clarification, and 70 inferred-trait attempts that must be rejected. Each record preserves raw ASR,
+formatted text, context metadata, the candidate, the resulting decision, and source provenance in local
+Postgres. Corpus records use a dedicated scope and cannot affect normal product retrieval.
+
 ## Database-backed contract
 
 `bun run eval:database` refreshes only the `evaluation-fixture-v1` local fixture scope, then executes retrieval through the real repository and local Postgres. It verifies active-memory retrieval, soft-expired exclusion, supersession propagation, and weak-evidence exclusion while reporting per-case latency. It never clears user-scoped memory.

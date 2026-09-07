@@ -37,6 +37,20 @@ bun run seed
 
 The seed creates one supported deadline memory and one rejected inferred-trait case. The latter exists to demonstrate that Kivi refuses to retain a sensitive inferred label.
 
+## Development corpus
+
+The versioned development corpus contains 500 transcript-like records with raw ASR, formatted text,
+metadata, expected policy outcomes, and accepted / clarification / rejected cases. It is imported through
+the same transcript-to-memory pipeline as the product:
+
+```bash
+bun run corpus:import
+```
+
+It refreshes only the `development-corpus-v1` scope. Those records remain inspectable in local Supabase
+Studio but are deliberately excluded from a normal Kivi workspace, normal Hey Kivi retrieval, and the
+normal-user audit timeline.
+
 ## Run the application
 
 ```bash

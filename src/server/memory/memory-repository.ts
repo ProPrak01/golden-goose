@@ -9,6 +9,7 @@ export async function recordMemoryDecision(input: {
   decision: MemoryDecision;
   transcriptId: string;
   excerpt: string;
+  subjectKey?: string;
 }): Promise<string | null> {
   const database = getDatabaseClient();
   let memoryId: string | null = null;
@@ -20,6 +21,7 @@ export async function recordMemoryDecision(input: {
       .insert({
         memory_type: input.candidate.memoryType,
         status: input.decision.nextStatus,
+        subject_key: input.subjectKey ?? 'self',
         canonical_statement: input.candidate.canonicalStatement,
         confidence: input.candidate.confidence,
         embedding: embedding ? toPgVector(embedding.vector) : null,

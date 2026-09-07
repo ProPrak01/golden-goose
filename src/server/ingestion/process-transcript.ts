@@ -11,6 +11,7 @@ export async function processTranscript(input: {
   transcript: TranscriptInput;
   candidate: MemoryCandidate;
   excerpt: string;
+  subjectKey?: string;
 }) {
   const transcript = transcriptInputSchema.parse(input.transcript);
   const candidate = memoryCandidateSchema.parse(input.candidate);
@@ -21,6 +22,7 @@ export async function processTranscript(input: {
     decision,
     transcriptId: storedTranscript.id,
     excerpt: input.excerpt,
+    ...(input.subjectKey === undefined ? {} : { subjectKey: input.subjectKey }),
   });
 
   return { transcriptId: storedTranscript.id, memoryId, decision };

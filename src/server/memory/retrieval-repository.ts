@@ -3,7 +3,7 @@ import { scoreLexicalRelevance } from '@/domain/retrieval';
 import { getDatabaseClient } from '@/server/database/client';
 import { RepositoryError } from '@/server/database/errors';
 import { createTextEmbedding, toPgVector } from '@/server/embeddings/provider';
-import { evaluationFixtureSubjectKey } from '@/server/memory/scopes';
+import { developmentCorpusSubjectKey, evaluationFixtureSubjectKey } from '@/server/memory/scopes';
 
 type RetrievalOptions = {
   includeEvaluationFixtures?: boolean;
@@ -33,6 +33,7 @@ export async function listRetrievalCandidates(
   if (!includeEvaluationFixtures) {
     queryBuilder = queryBuilder.neq('subject_key', evaluationFixtureSubjectKey);
   }
+  queryBuilder = queryBuilder.neq('subject_key', developmentCorpusSubjectKey);
   const { data, error } = await queryBuilder;
   if (error) throw new RepositoryError('list retrieval candidates', error.message);
 
