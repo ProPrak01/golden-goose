@@ -33,9 +33,9 @@ OPENAI_API_KEY=your_key_here
 
 The application stores the resulting `text-embedding-3-small` vector on the memory record and uses the local `match_memory_embeddings` cosine-similarity function alongside lexical relevance. Existing records remain retrievable through the deterministic fallback until they are re-captured or corrected.
 
-## Required final documentation
+## Final documentation
 
-`RUN.md` will state:
+[RUN.md](../../RUN.md) states:
 
 1. runtime versions and Docker requirement;
 2. every environment variable;

@@ -20,4 +20,4 @@ bun run dev
 
 Run the quality suite with `bun run check`.
 
-See [docs/README.md](docs/README.md) for the product, architecture, evaluation, and reviewer-operation plan.
+For a clean local review, use [RUN.md](RUN.md). See [docs/README.md](docs/README.md) for the product, architecture, evaluation, and reviewer-operation plan.
