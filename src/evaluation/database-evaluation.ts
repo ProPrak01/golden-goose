@@ -1,4 +1,4 @@
-import { planAssistantResponse } from '@/domain/assistant';
+import { composeAssistantResponse, planAssistantResponse } from '@/domain/assistant';
 import { selectGroundedMemories } from '@/domain/retrieval';
 import { getDatabaseClient } from '@/server/database/client';
 import { listRetrievalCandidates } from '@/server/memory/retrieval-repository';
@@ -43,6 +43,25 @@ const fixtures: FixtureMemory[] = [
     status: 'active',
     confidence: 0.6,
     transcript: 'I think the uncertain laboratory deadline might be Wednesday.',
+  },
+  {
+    statement: 'The Signals quiz is due Friday.',
+    status: 'active',
+    confidence: 0.95,
+    transcript: 'My Signals quiz is due Friday.',
+  },
+  {
+    statement:
+      'The user explicitly reported rushing Signals revision after starting the night before.',
+    status: 'active',
+    confidence: 0.9,
+    transcript: 'Last Signals quiz, I rushed revision because I started the night before.',
+  },
+  {
+    statement: 'The user explicitly prefers two focused study blocks before a Signals assessment.',
+    status: 'active',
+    confidence: 0.9,
+    transcript: 'For Signals, I prefer two focused study blocks before an assessment.',
   },
 ];
 
@@ -157,6 +176,14 @@ export async function runDatabaseEvaluation() {
       expectedOutcome: 'abstained',
       expectedMemoryId: undefined,
     },
+    {
+      id: 'database-multi-dictation-action',
+      request: 'What should I do for Signals this week?',
+      expectedOutcome: 'answered',
+      expectedMemoryId: ids.get('The Signals quiz is due Friday.'),
+      expectedSelectedCount: 3,
+      expectedResponseText: '3 related explicit memories',
+    },
   ];
 
   const results = await Promise.all(
@@ -166,15 +193,21 @@ export async function runDatabaseEvaluation() {
         await listRetrievalCandidates(testCase.request, { includeEvaluationFixtures: true }),
       );
       const plan = planAssistantResponse(testCase.request, retrieval);
+      const response = composeAssistantResponse(plan, retrieval);
       const selectedIds =
         retrieval.kind === 'selected' ? retrieval.candidates.map(({ id }) => id) : [];
       const passed =
         plan.outcome === testCase.expectedOutcome &&
-        (testCase.expectedMemoryId === undefined || selectedIds[0] === testCase.expectedMemoryId);
+        (testCase.expectedMemoryId === undefined || selectedIds[0] === testCase.expectedMemoryId) &&
+        (testCase.expectedSelectedCount === undefined ||
+          selectedIds.length === testCase.expectedSelectedCount) &&
+        (testCase.expectedResponseText === undefined ||
+          response.includes(testCase.expectedResponseText));
       return {
         ...testCase,
         actualOutcome: plan.outcome,
         selectedIds,
+        response,
         latencyMs: Math.round(performance.now() - startedAt),
         passed,
       };

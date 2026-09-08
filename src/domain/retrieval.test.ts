@@ -44,6 +44,32 @@ describe('grounded retrieval', () => {
     ).toBe(0.01);
   });
 
+  it('does not mix generic planning fallbacks into a specific topic result', () => {
+    const result = selectGroundedMemories([
+      {
+        id: 'signals-deadline',
+        statement: 'Signals quiz due Friday.',
+        status: 'active',
+        confidence: 0.9,
+        lexicalScore: 0.6,
+        evidenceCount: 1,
+      },
+      {
+        id: 'unrelated-planning',
+        statement: 'Controls assignment due Friday.',
+        status: 'active',
+        confidence: 0.9,
+        lexicalScore: 0.01,
+        evidenceCount: 1,
+      },
+    ]);
+
+    expect(result).toMatchObject({ kind: 'selected' });
+    if (result.kind === 'selected') {
+      expect(result.candidates.map((candidate) => candidate.id)).toEqual(['signals-deadline']);
+    }
+  });
+
   it('does not manufacture relevance for an unrelated factual question', () => {
     expect(
       scoreLexicalRelevance('What is my home address?', 'Controls assignment due Friday.'),

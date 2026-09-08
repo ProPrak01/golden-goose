@@ -15,12 +15,18 @@ export type RetrievalResult =
 const planningTerms = new Set(['action', 'do', 'help', 'next', 'plan', 'should', 'today']);
 const nonDiscriminatingTerms = new Set([
   'a',
+  'assessment',
   'an',
+  'assignment',
   'are',
   'due',
   'i',
   'is',
   'my',
+  'homework',
+  'quiz',
+  'report',
+  'task',
   'the',
   'was',
   'were',
@@ -49,13 +55,20 @@ export function scoreLexicalRelevance(query: string, statement: string) {
 }
 
 export function selectGroundedMemories(candidates: readonly RetrievalCandidate[]): RetrievalResult {
-  const selected = [...candidates]
+  const eligible = [...candidates].filter(
+    (candidate) =>
+      candidate.status === 'active' &&
+      candidate.confidence >= 0.7 &&
+      candidate.evidenceCount > 0 &&
+      (candidate.lexicalScore > 0 || (candidate.semanticScore ?? 0) > 0.2),
+  );
+  const hasSpecificMatch = eligible.some(
+    (candidate) => Math.max(candidate.lexicalScore, candidate.semanticScore ?? 0) > 0.01,
+  );
+  const selected = eligible
     .filter(
       (candidate) =>
-        candidate.status === 'active' &&
-        candidate.confidence >= 0.7 &&
-        candidate.evidenceCount > 0 &&
-        (candidate.lexicalScore > 0 || (candidate.semanticScore ?? 0) > 0.2),
+        !hasSpecificMatch || Math.max(candidate.lexicalScore, candidate.semanticScore ?? 0) > 0.01,
     )
     .sort(
       (left, right) =>
