@@ -16,7 +16,7 @@ export default function CapturePage() {
         <h1>Review what Kivi remembers before it is saved.</h1>
         <p className="lede">
           The source statement stays linked to the memory. A proposal is reviewed first; it is never
-          silently created.
+          silently created. Switch on Incognito when this capture should not leave this device.
         </p>
       </section>
       <TranscriptCaptureForm />

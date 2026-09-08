@@ -198,6 +198,27 @@ body {
   color: var(--muted);
   line-height: 1.45;
 }
+.incognito-control {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--paper) 82%, var(--ink) 3%);
+}
+.incognito-control input {
+  width: auto;
+  margin-top: 0.2rem;
+}
+.incognito-control strong,
+.incognito-control small {
+  display: block;
+}
+.incognito-control small {
+  margin-top: 0.2rem;
+  color: var(--muted);
+}
 .capture-form > button,
 .proposal-result button {
   margin-top: 0.5rem;

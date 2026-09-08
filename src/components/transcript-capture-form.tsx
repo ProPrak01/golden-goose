@@ -29,6 +29,7 @@ export function TranscriptCaptureForm() {
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isIncognito, setIsIncognito] = useState(false);
 
   const requestPayload = {
     occurredAt: new Date(occurredAt).toISOString(),
@@ -40,6 +41,11 @@ export function TranscriptCaptureForm() {
   };
 
   async function reviewProposal() {
+    if (isIncognito) {
+      setProposal(null);
+      setMessage('Incognito is on. This statement stays in this form and is not sent or saved.');
+      return;
+    }
     setIsLoading(true);
     setMessage(null);
     try {
@@ -105,6 +111,24 @@ export function TranscriptCaptureForm() {
         onChange={(event) => setTranscriptText(event.target.value)}
         rows={4}
       />
+      <label className="incognito-control" htmlFor="capture-incognito">
+        <input
+          id="capture-incognito"
+          type="checkbox"
+          checked={isIncognito}
+          onChange={(event) => {
+            setIsIncognito(event.target.checked);
+            setProposal(null);
+            setMessage(null);
+          }}
+        />
+        <span>
+          <strong>Incognito — do not retain this</strong>
+          <small>
+            This statement stays on this device and is not sent, saved, or used by Hey Kivi.
+          </small>
+        </span>
+      </label>
       <label htmlFor="capture-memory">What should Kivi remember?</label>
       <textarea
         id="capture-memory"
@@ -139,9 +163,9 @@ export function TranscriptCaptureForm() {
       <button
         type="button"
         onClick={reviewProposal}
-        disabled={isLoading || !transcriptText.trim() || !memoryStatement.trim()}
+        disabled={isLoading || !transcriptText.trim() || (!isIncognito && !memoryStatement.trim())}
       >
-        {isLoading ? 'Reviewing…' : 'Review proposal'}
+        {isLoading ? 'Reviewing…' : isIncognito ? 'Keep private' : 'Review proposal'}
       </button>
       {proposal ? (
         <section className="proposal-result" aria-live="polite">

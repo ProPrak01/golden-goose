@@ -11,3 +11,10 @@ test('reviews a transcript memory proposal before it can be saved', async ({ pag
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Save approved memory' })).toBeVisible();
 });
+
+test('keeps an incognito capture out of Kivi memory', async ({ page }) => {
+  await page.goto('/capture');
+  await page.getByLabel('Incognito — do not retain this').check();
+  await page.getByRole('button', { name: 'Keep private' }).click();
+  await expect(page.getByText('Incognito is on. This statement stays in this form')).toBeVisible();
+});
