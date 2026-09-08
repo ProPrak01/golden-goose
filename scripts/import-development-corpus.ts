@@ -50,6 +50,7 @@ async function clearDevelopmentCorpus() {
 
 async function main() {
   const corpus = createDevelopmentCorpus();
+  const startedAt = performance.now();
   await clearDevelopmentCorpus();
 
   const results = [];
@@ -79,6 +80,10 @@ async function main() {
         recordsProcessed: corpus.length,
         decisions: summary,
         durableMemories: results.filter((result) => result.memoryId !== null).length,
+        elapsedMs: Math.round(performance.now() - startedAt),
+        averageRecordLatencyMs: Number(
+          ((performance.now() - startedAt) / corpus.length).toFixed(2),
+        ),
       },
       null,
       2,

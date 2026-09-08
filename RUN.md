@@ -45,6 +45,7 @@ the same transcript-to-memory pipeline as the product:
 
 ```bash
 bun run corpus:import
+bun run corpus:verify
 ```
 
 It refreshes only the `development-corpus-v1` scope. Those records remain inspectable in local Supabase
