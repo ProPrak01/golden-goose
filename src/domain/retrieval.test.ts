@@ -94,6 +94,15 @@ describe('grounded retrieval', () => {
     if (result.kind === 'selected') expect(result.candidates).toHaveLength(1);
   });
 
+  it('does not use connective words as a course-specific match', () => {
+    expect(
+      scoreLexicalRelevance(
+        'What should I do for Signals this week?',
+        'The user explicitly reported rushing final revision for an Algorithms quiz after starting the night before.',
+      ),
+    ).toBe(0.01);
+  });
+
   it('does not manufacture relevance for an unrelated factual question', () => {
     expect(
       scoreLexicalRelevance('What is my home address?', 'Controls assignment due Friday.'),
