@@ -7,6 +7,7 @@ import { developmentCorpusSubjectKey, evaluationFixtureSubjectKey } from '@/serv
 
 type RetrievalOptions = {
   includeEvaluationFixtures?: boolean;
+  includeDevelopmentCorpus?: boolean;
 };
 
 async function getSemanticScores(query: string) {
@@ -23,7 +24,7 @@ async function getSemanticScores(query: string) {
 
 export async function listRetrievalCandidates(
   query: string,
-  { includeEvaluationFixtures = false }: RetrievalOptions = {},
+  { includeEvaluationFixtures = false, includeDevelopmentCorpus = false }: RetrievalOptions = {},
 ): Promise<RetrievalCandidate[]> {
   const semanticScores = await getSemanticScores(query);
   let queryBuilder = getDatabaseClient()
@@ -33,7 +34,9 @@ export async function listRetrievalCandidates(
   if (!includeEvaluationFixtures) {
     queryBuilder = queryBuilder.neq('subject_key', evaluationFixtureSubjectKey);
   }
-  queryBuilder = queryBuilder.neq('subject_key', developmentCorpusSubjectKey);
+  if (!includeDevelopmentCorpus) {
+    queryBuilder = queryBuilder.neq('subject_key', developmentCorpusSubjectKey);
+  }
   const { data, error } = await queryBuilder;
   if (error) throw new RepositoryError('list retrieval candidates', error.message);
 

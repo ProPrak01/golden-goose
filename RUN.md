@@ -75,9 +75,12 @@ bun run check
 bun run test:e2e
 bun run eval
 bun run eval:database
+bun run eval:corpus
 ```
 
 `bun run eval` is a pure, versioned safety corpus. `bun run eval:database` refreshes only the `evaluation-fixture-v1` subject scope and verifies the actual local Postgres retrieval path; it does not clear user-scoped memory.
+
+`bun run eval:corpus` queries the isolated 500-record `development-corpus-v1` scope through the real retrieval and response logic. It reports outcomes, selected evidence, response text, and latency without exposing that corpus in normal Kivi use.
 
 ## Optional hybrid semantic retrieval
 

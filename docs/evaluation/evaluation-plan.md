@@ -59,6 +59,11 @@ clarification, and 70 inferred-trait attempts that must be rejected. Each record
 formatted text, context metadata, the candidate, the resulting decision, and source provenance in local
 Postgres. Corpus records use a dedicated scope and cannot affect normal product retrieval.
 
+`bun run eval:corpus` asks fixed questions against that isolated scope using the same retrieval and
+response logic as Hey Kivi. It reports selected evidence, response text, outcome, and per-case latency.
+Multi-dictation action composition is separately covered by the database-backed `Signals` contract below,
+where its three explicit sources are deliberately distinct.
+
 ## Database-backed contract
 
 `bun run eval:database` refreshes only the `evaluation-fixture-v1` local fixture scope, then executes retrieval through the real repository and local Postgres. It verifies active-memory retrieval, soft-expired exclusion, supersession propagation, and weak-evidence exclusion while reporting per-case latency. It never clears user-scoped memory.
