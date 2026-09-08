@@ -70,6 +70,30 @@ describe('grounded retrieval', () => {
     }
   });
 
+  it('deduplicates repeated canonical statements before composing an answer', () => {
+    const result = selectGroundedMemories([
+      {
+        id: 'first',
+        statement: 'Signals quiz due Friday.',
+        status: 'active',
+        confidence: 0.9,
+        lexicalScore: 0.8,
+        evidenceCount: 1,
+      },
+      {
+        id: 'second',
+        statement: 'Signals quiz due Friday.',
+        status: 'active',
+        confidence: 0.9,
+        lexicalScore: 0.7,
+        evidenceCount: 1,
+      },
+    ]);
+
+    expect(result).toMatchObject({ kind: 'selected' });
+    if (result.kind === 'selected') expect(result.candidates).toHaveLength(1);
+  });
+
   it('does not manufacture relevance for an unrelated factual question', () => {
     expect(
       scoreLexicalRelevance('What is my home address?', 'Controls assignment due Friday.'),

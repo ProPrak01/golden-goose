@@ -65,7 +65,7 @@ export function selectGroundedMemories(candidates: readonly RetrievalCandidate[]
   const hasSpecificMatch = eligible.some(
     (candidate) => Math.max(candidate.lexicalScore, candidate.semanticScore ?? 0) > 0.01,
   );
-  const selected = eligible
+  const ranked = eligible
     .filter(
       (candidate) =>
         !hasSpecificMatch || Math.max(candidate.lexicalScore, candidate.semanticScore ?? 0) > 0.01,
@@ -75,7 +75,10 @@ export function selectGroundedMemories(candidates: readonly RetrievalCandidate[]
         Math.max(right.lexicalScore, right.semanticScore ?? 0) -
         Math.max(left.lexicalScore, left.semanticScore ?? 0),
     )
-    .slice(0, 5);
+    .slice(0, 20);
+  const selected = [
+    ...new Map(ranked.map((candidate) => [candidate.statement, candidate])).values(),
+  ].slice(0, 5);
 
   if (selected.length === 0) {
     return {
