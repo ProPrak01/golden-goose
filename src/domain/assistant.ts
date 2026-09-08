@@ -26,9 +26,26 @@ export function composeAssistantResponse(plan: AssistantPlan, retrieval: Retriev
     return 'I do not have enough explicit, supported history to make a recommendation yet.';
   }
 
-  const primaryMemory = retrieval.candidates[0];
+  const memories = retrieval.candidates;
+  const primaryMemory = memories[0];
   if (!primaryMemory) {
     throw new Error('An answered plan requires a selected memory.');
   }
-  return `Based on the explicit memory “${primaryMemory.statement}”, open the task, identify the smallest unfinished deliverable, and reserve a focused work block before the stated deadline.`;
+
+  if (memories.length === 1) {
+    return `Based on the explicit memory “${primaryMemory.statement}”, open the task, identify the smallest unfinished deliverable, and reserve a focused work block before the stated deadline.`;
+  }
+
+  const statements = memories.map((memory) => `“${memory.statement}”`).join('; ');
+  const combinedText = memories.map((memory) => memory.statement.toLocaleLowerCase()).join(' ');
+  const hasExplicitRushingLesson = /rushed|night before|last.minute/.test(combinedText);
+  const hasExplicitFocusPreference = /focused study blocks?|focused work blocks?/.test(
+    combinedText,
+  );
+  const action =
+    hasExplicitRushingLesson && hasExplicitFocusPreference
+      ? 'Start with the smallest unfinished piece now, then reserve the focused study blocks you explicitly said work for you before the deadline.'
+      : 'Open the smallest unfinished deliverable now and use the relevant explicit commitments together when planning the next work block.';
+
+  return `I found ${memories.length} related explicit memories: ${statements}. ${action}`;
 }

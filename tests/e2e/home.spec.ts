@@ -16,5 +16,5 @@ test('shows the Hey Kivi workspace', async ({ page }) => {
   const response = page.waitForResponse('**/api/hey-kivi');
   await page.getByRole('button', { name: 'Ask Kivi →' }).click();
   await expect((await response).ok()).toBeTruthy();
-  await expect(page.getByText('Based on the explicit memory')).toBeVisible();
+  await expect(page.getByText('Explicit memories used:')).toBeVisible();
 });

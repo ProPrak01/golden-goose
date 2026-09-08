@@ -68,7 +68,14 @@ export function AskKiviCard() {
               <p className="result-outcome">{result.outcome}</p>
               <p>{result.response}</p>
               {result.memories.length > 0 ? (
-                <p className="result-source">Source used: {result.memories[0]?.statement}</p>
+                <div className="result-source">
+                  <p>Explicit memories used:</p>
+                  <ul>
+                    {result.memories.map((memory) => (
+                      <li key={memory.id}>{memory.statement}</li>
+                    ))}
+                  </ul>
+                </div>
               ) : null}
             </>
           ) : null}
