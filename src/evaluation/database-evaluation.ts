@@ -198,7 +198,8 @@ export async function runDatabaseEvaluation() {
         retrieval.kind === 'selected' ? retrieval.candidates.map(({ id }) => id) : [];
       const passed =
         plan.outcome === testCase.expectedOutcome &&
-        (testCase.expectedMemoryId === undefined || selectedIds.includes(testCase.expectedMemoryId)) &&
+        (testCase.expectedMemoryId === undefined ||
+          selectedIds.includes(testCase.expectedMemoryId)) &&
         (testCase.expectedSelectedCount === undefined ||
           selectedIds.length === testCase.expectedSelectedCount) &&
         (testCase.expectedResponseText === undefined ||
