@@ -15,8 +15,9 @@ export default function CapturePage() {
         <p className="eyebrow">Evidence-first capture</p>
         <h1>Review what Kivi remembers before it is saved.</h1>
         <p className="lede">
-          The source statement stays linked to the memory. A proposal is reviewed first; it is never
-          silently created. Switch on Incognito when this capture should not leave this device.
+          Paste one raw statement. Sarvam may suggest explicit memories, but the source stays linked
+          and you review the final wording before anything is created. Switch on Incognito when this
+          capture should not leave this device.
         </p>
       </section>
       <TranscriptCaptureForm />

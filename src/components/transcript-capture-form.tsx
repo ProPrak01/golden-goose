@@ -19,6 +19,22 @@ type Proposal = {
   };
 };
 
+type ModelRun = {
+  provider: string;
+  model: string;
+  latencyMs: number;
+  inputTokens: number | null;
+  outputTokens: number | null;
+};
+
+type ExtractedProposal = Proposal & { excerpt: string };
+
+type ExtractionResponse = {
+  proposals: ExtractedProposal[];
+  extractionReason: string;
+  modelRun: ModelRun;
+};
+
 const defaultOccurredAt = '2026-09-11T09:00';
 
 export function TranscriptCaptureForm() {
@@ -27,8 +43,12 @@ export function TranscriptCaptureForm() {
   const [memoryType, setMemoryType] = useState<Proposal['input']['memoryType']>('fact');
   const [occurredAt, setOccurredAt] = useState(defaultOccurredAt);
   const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [extractedProposals, setExtractedProposals] = useState<ExtractedProposal[]>([]);
+  const [extractionModelRun, setExtractionModelRun] = useState<ModelRun | null>(null);
+  const [selectedModelRun, setSelectedModelRun] = useState<ModelRun | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
   const [isIncognito, setIsIncognito] = useState(false);
 
   const requestPayload = {
@@ -65,6 +85,59 @@ export function TranscriptCaptureForm() {
     }
   }
 
+  async function extractProposals() {
+    if (isIncognito) {
+      setProposal(null);
+      setExtractedProposals([]);
+      setMessage('Incognito is on. This statement stays in this form and is not sent or saved.');
+      return;
+    }
+    setIsExtracting(true);
+    setMessage(null);
+    setProposal(null);
+    try {
+      const response = await fetch('/api/memory-extractions', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          occurredAt: new Date(occurredAt).toISOString(),
+          sourceApp: 'Kivi',
+          transcriptText,
+        }),
+      });
+      const body = (await response.json()) as ExtractionResponse | { error?: string };
+      if (!response.ok || !('proposals' in body)) {
+        throw new Error(
+          'error' in body ? body.error : 'Kivi could not extract memory suggestions.',
+        );
+      }
+      setExtractedProposals(body.proposals);
+      setExtractionModelRun(body.modelRun);
+      setSelectedModelRun(null);
+      setMessage(
+        body.proposals.length === 0
+          ? 'Kivi found no explicit, durable academic memory in this statement. Nothing was saved.'
+          : 'Choose a suggestion to place it in the review form. Nothing is saved yet.',
+      );
+    } catch (error) {
+      setExtractedProposals([]);
+      setExtractionModelRun(null);
+      setMessage(
+        error instanceof Error ? error.message : 'Kivi could not extract memory suggestions.',
+      );
+    } finally {
+      setIsExtracting(false);
+    }
+  }
+
+  function selectExtractedProposal(extracted: ExtractedProposal, modelRun: ModelRun) {
+    setMemoryStatement(extracted.input.memoryStatement);
+    setMemoryType(extracted.input.memoryType);
+    setSelectedModelRun(modelRun);
+    setProposal(null);
+    setMessage('Suggestion placed in the review form. Edit if needed, then review before saving.');
+  }
+
   async function saveProposal() {
     if (!proposal) return;
     setIsLoading(true);
@@ -90,6 +163,7 @@ export function TranscriptCaptureForm() {
             isSensitiveInference: false,
           },
           excerpt: proposal.input.transcriptText,
+          ...(selectedModelRun === null ? {} : { modelRun: selectedModelRun }),
         }),
       });
       if (!response.ok) throw new Error('Kivi could not save this memory.');
@@ -108,9 +182,26 @@ export function TranscriptCaptureForm() {
       <textarea
         id="capture-transcript"
         value={transcriptText}
-        onChange={(event) => setTranscriptText(event.target.value)}
+        onChange={(event) => {
+          setTranscriptText(event.target.value);
+          setSelectedModelRun(null);
+          setExtractedProposals([]);
+          setExtractionModelRun(null);
+        }}
         rows={4}
       />
+      <button
+        className="extract-button"
+        type="button"
+        onClick={extractProposals}
+        disabled={isExtracting || !transcriptText.trim() || isIncognito}
+      >
+        {isExtracting ? 'Finding explicit memories…' : 'Ask Sarvam for explicit memories'}
+      </button>
+      <p className="capture-policy">
+        Sarvam can suggest up to three candidates. It cannot save anything; you choose, review, and
+        approve the final wording.
+      </p>
       <label className="incognito-control" htmlFor="capture-incognito">
         <input
           id="capture-incognito"
@@ -119,6 +210,9 @@ export function TranscriptCaptureForm() {
           onChange={(event) => {
             setIsIncognito(event.target.checked);
             setProposal(null);
+            setExtractedProposals([]);
+            setExtractionModelRun(null);
+            setSelectedModelRun(null);
             setMessage(null);
           }}
         />
@@ -133,7 +227,10 @@ export function TranscriptCaptureForm() {
       <textarea
         id="capture-memory"
         value={memoryStatement}
-        onChange={(event) => setMemoryStatement(event.target.value)}
+        onChange={(event) => {
+          setMemoryStatement(event.target.value);
+          setSelectedModelRun(null);
+        }}
         rows={3}
       />
       <div className="capture-fields">
@@ -141,7 +238,10 @@ export function TranscriptCaptureForm() {
         <select
           id="capture-type"
           value={memoryType}
-          onChange={(event) => setMemoryType(event.target.value as Proposal['input']['memoryType'])}
+          onChange={(event) => {
+            setMemoryType(event.target.value as Proposal['input']['memoryType']);
+            setSelectedModelRun(null);
+          }}
         >
           <option value="fact">Fact</option>
           <option value="preference">Preference</option>
@@ -167,6 +267,23 @@ export function TranscriptCaptureForm() {
       >
         {isLoading ? 'Reviewing…' : isIncognito ? 'Keep private' : 'Review proposal'}
       </button>
+      {extractedProposals.length > 0 && extractionModelRun ? (
+        <section className="extraction-results" aria-live="polite">
+          <p className="status">Sarvam suggestions · not saved</p>
+          {extractedProposals.map((extracted) => (
+            <article key={`${extracted.input.memoryStatement}-${extracted.excerpt}`}>
+              <p>{extracted.input.memoryStatement}</p>
+              <small>Source: “{extracted.excerpt}”</small>
+              <button
+                type="button"
+                onClick={() => selectExtractedProposal(extracted, extractionModelRun)}
+              >
+                Use this suggestion
+              </button>
+            </article>
+          ))}
+        </section>
+      ) : null}
       {proposal ? (
         <section className="proposal-result" aria-live="polite">
           <p className="status">Proposal: {proposal.decision.kind}</p>

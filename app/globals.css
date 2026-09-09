@@ -241,6 +241,45 @@ body {
 .proposal-result h2 {
   margin-top: 0.4rem;
 }
+.extraction-results {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+  padding: 1rem;
+  border: 2px solid var(--line);
+  background: var(--acid);
+}
+.extraction-results > article {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem;
+  border: 2px solid var(--line);
+  background: #fffdf7;
+}
+.extraction-results article > p,
+.extraction-results article > small {
+  margin: 0;
+}
+.extraction-results article > p {
+  font-weight: 800;
+}
+.extraction-results article > small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+.extraction-results button {
+  justify-self: start;
+  padding: 0.55rem 0.7rem;
+  border: 2px solid var(--line);
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.extraction-results button:hover {
+  background: var(--warm);
+}
 .history-list {
   padding: 1.5rem;
   border: 1px solid var(--line);

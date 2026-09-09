@@ -19,6 +19,15 @@ const requestSchema = z.object({
     isSensitiveInference: z.boolean(),
   }),
   excerpt: z.string().min(1),
+  modelRun: z
+    .object({
+      provider: z.string().min(1),
+      model: z.string().min(1),
+      latencyMs: z.number().int().nonnegative(),
+      inputTokens: z.number().int().nonnegative().nullable(),
+      outputTokens: z.number().int().nonnegative().nullable(),
+    })
+    .optional(),
 });
 
 export async function POST(request: Request) {
@@ -27,6 +36,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const result = await processTranscript(parsed.data);
+  const { modelRun, ...requestData } = parsed.data;
+  const result = await processTranscript({
+    ...requestData,
+    ...(modelRun === undefined ? {} : { modelRun }),
+  });
   return NextResponse.json(result, { status: 201 });
 }

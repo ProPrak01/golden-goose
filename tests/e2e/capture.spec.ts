@@ -5,7 +5,15 @@ test('reviews a transcript memory proposal before it can be saved', async ({ pag
   await expect(
     page.getByRole('heading', { name: 'Review what Kivi remembers before it is saved.' }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Ask Sarvam for explicit memories' }),
+  ).toBeVisible();
+  const proposalResponse = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/api/memory-proposals') && response.request().method() === 'POST',
+  );
   await page.getByRole('button', { name: 'Review proposal' }).click();
+  expect((await proposalResponse).ok()).toBeTruthy();
   await expect(
     page.getByText('Explicit evidence meets the memory confidence threshold.'),
   ).toBeVisible();
