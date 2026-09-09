@@ -10,7 +10,10 @@ type ExtractionResult = {
   outputTokens: number | null;
 };
 
-export async function extractMemoriesWithSarvam(formattedText: string): Promise<ExtractionResult> {
+export async function extractMemoriesWithSarvam(
+  formattedText: string,
+  attempt = 0,
+): Promise<ExtractionResult> {
   const environment = getServerEnvironment();
   if (environment.LLM_PROVIDER !== 'sarvam' || !environment.SARVAM_API) {
     throw new Error('Sarvam extraction requires LLM_PROVIDER=sarvam and SARVAM_API.');
@@ -41,7 +44,10 @@ export async function extractMemoriesWithSarvam(formattedText: string): Promise<
     usage?: { prompt_tokens?: number; completion_tokens?: number };
   };
   const content = payload.choices?.[0]?.message?.content;
-  if (!content) throw new Error('Sarvam returned no structured extraction content.');
+  if (!content) {
+    if (attempt === 0) return extractMemoriesWithSarvam(formattedText, 1);
+    throw new Error('Sarvam returned no structured extraction content after one retry.');
+  }
   let parsedContent: unknown;
   try {
     parsedContent = JSON.parse(content);
@@ -50,6 +56,7 @@ export async function extractMemoriesWithSarvam(formattedText: string): Promise<
   }
   const extraction = memoryExtractionSchema.safeParse(parsedContent);
   if (!extraction.success) {
+    if (attempt === 0) return extractMemoriesWithSarvam(formattedText, 1);
     throw new Error(`Sarvam returned an invalid memory extraction: ${extraction.error.message}`);
   }
   return {
