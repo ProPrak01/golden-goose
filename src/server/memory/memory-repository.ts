@@ -10,6 +10,13 @@ export async function recordMemoryDecision(input: {
   transcriptId: string;
   excerpt: string;
   subjectKey?: string;
+  modelRun?: {
+    provider: string;
+    model: string;
+    latencyMs: number;
+    inputTokens: number | null;
+    outputTokens: number | null;
+  };
 }): Promise<string | null> {
   const database = getDatabaseClient();
   let memoryId: string | null = null;
@@ -49,6 +56,11 @@ export async function recordMemoryDecision(input: {
     kind: input.decision.kind === 'accept' ? 'created' : 'rejected',
     reason: input.decision.reason,
     decision_input: input.candidate as unknown as Json,
+    provider: input.modelRun?.provider ?? 'deterministic',
+    model: input.modelRun?.model ?? null,
+    latency_ms: input.modelRun?.latencyMs ?? null,
+    input_tokens: input.modelRun?.inputTokens ?? null,
+    output_tokens: input.modelRun?.outputTokens ?? null,
   });
   if (decisionError) throw new RepositoryError('record memory decision', decisionError.message);
 
