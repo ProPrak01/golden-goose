@@ -25,6 +25,7 @@ export async function extractMemoriesWithSarvam(
     headers: { 'api-subscription-key': environment.SARVAM_API, 'content-type': 'application/json' },
     body: JSON.stringify({
       model: 'sarvam-105b',
+      reasoning_effort: null,
       temperature: 0,
       max_tokens: 700,
       messages: [
