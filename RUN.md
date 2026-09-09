@@ -52,6 +52,15 @@ It refreshes only the `development-corpus-v1` scope. Those records remain inspec
 Studio but are deliberately excluded from a normal Kivi workspace, normal Hey Kivi retrieval, and the
 normal-user audit timeline.
 
+## Live Sarvam smoke check
+
+With `SARVAM_API` and `LLM_PROVIDER=sarvam` configured in `.env.local`, run a
+small isolated import. The scope is excluded from product reads.
+
+```bash
+bun run corpus:import:file -- fixtures/sarvam-smoke.jsonl sarvam-smoke-v1
+```
+
 ## Run the application
 
 ```bash

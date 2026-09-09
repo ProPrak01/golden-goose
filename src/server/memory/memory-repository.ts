@@ -66,3 +66,32 @@ export async function recordMemoryDecision(input: {
 
   return memoryId;
 }
+
+/** Records an auditable non-memory outcome when an extractor emits no candidates. */
+export async function recordNoMemoryDecision(input: {
+  transcriptId: string;
+  reason: string;
+  modelRun: {
+    provider: string;
+    model: string;
+    latencyMs: number;
+    inputTokens: number | null;
+    outputTokens: number | null;
+  };
+}): Promise<void> {
+  const { error } = await getDatabaseClient()
+    .from('memory_decisions')
+    .insert({
+      memory_id: null,
+      transcript_id: input.transcriptId,
+      kind: 'rejected',
+      reason: input.reason,
+      decision_input: { type: 'no_memory_candidate' } as Json,
+      provider: input.modelRun.provider,
+      model: input.modelRun.model,
+      latency_ms: input.modelRun.latencyMs,
+      input_tokens: input.modelRun.inputTokens,
+      output_tokens: input.modelRun.outputTokens,
+    });
+  if (error) throw new RepositoryError('record no-memory decision', error.message);
+}

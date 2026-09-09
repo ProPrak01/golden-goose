@@ -9,7 +9,10 @@ const { loadEnvConfig } = require('@next/env') as typeof import('@next/env');
 loadEnvConfig(process.cwd());
 
 const inputPath = process.argv[2];
-if (!inputPath) throw new Error('Usage: bun run corpus:import:file -- path/to/corpus.jsonl');
+const subjectKey = process.argv[3];
+if (!inputPath) {
+  throw new Error('Usage: bun run corpus:import:file -- path/to/corpus.jsonl [subject-key]');
+}
 
 const lines = (await readFile(inputPath, 'utf8')).split('\n').filter((line) => line.trim());
 const summary = { records: lines.length, candidates: 0, created: 0, clarified: 0, rejected: 0 };
@@ -23,6 +26,8 @@ for (const line of lines) {
       candidate: { ...candidate, evidenceCount: 1 },
       excerpt: candidate.excerpt,
     })),
+    ...(subjectKey === undefined ? {} : { subjectKey }),
+    emptyReason: 'Sarvam extraction produced no explicit memory candidates.',
     modelRun,
   });
   summary.candidates += result.results.length;
@@ -31,5 +36,6 @@ for (const line of lines) {
     if (decisionResult.decision.kind === 'clarify') summary.clarified += 1;
     if (decisionResult.decision.kind === 'reject') summary.rejected += 1;
   }
+  if (result.results.length === 0) summary.rejected += 1;
 }
 console.info(JSON.stringify(summary, null, 2));

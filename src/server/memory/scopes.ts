@@ -8,3 +8,6 @@ export const evaluationFixtureSubjectKey = 'evaluation-fixture-v1';
 /** A reproducible development corpus used to test the full ingestion pipeline. */
 export const developmentCorpusSubjectKey = 'development-corpus-v1';
 export const developmentCorpusSourceApp = 'Development corpus';
+
+/** A throwaway scope for a small live-provider check, hidden from product reads. */
+export const sarvamSmokeSubjectKey = 'sarvam-smoke-v1';

@@ -4,7 +4,7 @@ import {
   type MemoryCandidate,
 } from '@/domain/memory';
 import { transcriptInputSchema, type TranscriptInput } from '@/schemas/transcript';
-import { recordMemoryDecision } from '@/server/memory/memory-repository';
+import { recordMemoryDecision, recordNoMemoryDecision } from '@/server/memory/memory-repository';
 import { insertTranscript } from '@/server/ingestion/transcript-repository';
 
 export async function processTranscript(input: {
@@ -39,6 +39,8 @@ export async function processTranscript(input: {
 export async function processTranscriptCandidates(input: {
   transcript: TranscriptInput;
   candidates: Array<{ candidate: MemoryCandidate; excerpt: string }>;
+  subjectKey?: string;
+  emptyReason?: string;
   modelRun: {
     provider: string;
     model: string;
@@ -50,6 +52,13 @@ export async function processTranscriptCandidates(input: {
   const transcript = transcriptInputSchema.parse(input.transcript);
   const storedTranscript = await insertTranscript(transcript);
   const results = [];
+  if (input.candidates.length === 0) {
+    await recordNoMemoryDecision({
+      transcriptId: storedTranscript.id,
+      reason: input.emptyReason ?? 'No explicit memory candidate was extracted.',
+      modelRun: input.modelRun,
+    });
+  }
   for (const item of input.candidates) {
     const candidate = memoryCandidateSchema.parse(item.candidate);
     const decision = decideMemoryCandidate(candidate);
@@ -58,6 +67,7 @@ export async function processTranscriptCandidates(input: {
       decision,
       transcriptId: storedTranscript.id,
       excerpt: item.excerpt,
+      ...(input.subjectKey === undefined ? {} : { subjectKey: input.subjectKey }),
       modelRun: input.modelRun,
     });
     results.push({ memoryId, decision });
