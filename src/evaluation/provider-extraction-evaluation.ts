@@ -64,6 +64,7 @@ export async function runProviderExtractionEvaluation(
         ...candidate,
         evidenceCount: 1,
         sourceText: record.transcript.formattedText,
+        evidenceIsVerbatim: record.transcript.formattedText.includes(candidate.excerpt),
       }),
     );
     const actualDecision = combineDecisions(decisions);

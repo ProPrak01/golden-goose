@@ -105,6 +105,29 @@ bun run eval:sarvam -- path/to/corpus.jsonl
 
 `bun run eval:sarvam` runs raw ASR and formatted text through Sarvam extraction and Kivi's decision policy without writing to the database. A corpus can include optional `expectedDecision` (`accept`, `clarify`, or `reject`) either at the top level or in `context`. The report includes exact-policy pass rate, acceptance precision/recall, verbatim-evidence validity, candidate count, latency, and token totals. Unlabelled private records remain usable and are reported without affecting scored metrics.
 
+For a persisted provider audit, replay the stored outputs through the actual transcript, memory, retrieval, and Hey Kivi path without making another provider request:
+
+```bash
+bun run eval:provider-replay -- 6ff8d0f1-ea1a-40a8-b1c7-87fd0d971303
+```
+
+It creates the isolated `provider-audit-replay-v1` scope and writes
+`output/evaluation/sarvam_500_end_to_end_report.json`. This generated report includes every replayed transcript ID, memory decision, persisted memory ID, Hey Kivi outcome, storage delta, and the source provider run ID.
+
+## Import another corpus
+
+An evaluator corpus is JSONL: one JSON object per transcript with `occurredAt`, `rawAsr`, and `formattedText`; `sourceApp` and `context` are optional. The provider importer requires `LLM_PROVIDER=sarvam` and `SARVAM_API`.
+
+```json
+{"occurredAt":"2026-09-01T09:00:00.000Z","sourceApp":"Slack","rawAsr":"signals quiz due friday","formattedText":"My Signals quiz is due Friday.","context":{"project":"semester"}}
+```
+
+```bash
+bun run corpus:import:file -- path/to/corpus.jsonl evaluator-user-v1
+```
+
+The imported memories and provenance are inspectable in Supabase Studio. Ask Hey Kivi normally after importing: the supplied subject key is intentionally not hidden from normal product retrieval.
+
 For an auditable long provider run, the same command persists every completed record in local Postgres and can resume without repeating stored calls:
 
 ```bash

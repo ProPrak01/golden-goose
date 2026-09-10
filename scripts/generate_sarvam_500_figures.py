@@ -26,38 +26,40 @@ def base_axes(ax: plt.Axes) -> None:
 
 def category_outcomes() -> None:
     labels = ["Deadlines", "Preferences", "Episodes", "Uncertain details", "Inferred traits"]
-    accepted = np.array([250, 80, 56, 11, 50])
-    rejected = np.array([0, 0, 4, 29, 20])
+    accepted = np.array([250, 80, 56, 0, 0])
+    clarified = np.array([0, 0, 0, 40, 0])
+    rejected = np.array([0, 0, 4, 0, 70])
     positions = np.arange(len(labels))
 
     fig, ax = plt.subplots(figsize=(8.9, 3.7), layout="constrained")
     fig.patch.set_facecolor(PAPER)
     ax.barh(positions, accepted, color=GREEN, height=0.62, label="Accepted", zorder=2)
-    ax.barh(positions, rejected, left=accepted, color=ORANGE, height=0.62, label="Rejected", zorder=2)
-    for y, accept, reject in zip(positions, accepted, rejected, strict=True):
-        ax.text(accept + reject + 4, y, f"{accept} accept / {reject} reject", va="center", color=INK, fontsize=9)
+    ax.barh(positions, clarified, left=accepted, color=LIME, edgecolor=INK, linewidth=0.5, height=0.62, label="Clarified", zorder=2)
+    ax.barh(positions, rejected, left=accepted + clarified, color=ORANGE, height=0.62, label="Rejected", zorder=2)
+    for y, accept, clarify, reject in zip(positions, accepted, clarified, rejected, strict=True):
+        ax.text(accept + clarify + reject + 4, y, f"{accept} accept / {clarify} clarify / {reject} reject", va="center", color=INK, fontsize=8.5)
     ax.set_yticks(positions, labels)
     ax.invert_yaxis()
     ax.set_xlim(0, 300)
     ax.set_xlabel("Records", color=INK)
-    ax.set_title("Observed decision outcomes by test category", loc="left", weight="bold", color=INK, pad=12)
+    ax.set_title("Hardened decision outcomes by test category", loc="left", weight="bold", color=INK, pad=12)
     base_axes(ax)
-    ax.legend(ncols=2, frameon=False, loc="lower right", labelcolor=INK)
+    ax.legend(ncols=3, frameon=False, loc="lower right", labelcolor=INK)
     fig.savefig(OUT / "category_outcomes.png", dpi=220, facecolor=PAPER)
     plt.close(fig)
 
 
 def policy_match() -> None:
-    labels = ["Exact policy\nmatch", "Mismatch"]
-    values = [406, 94]
+    labels = ["Raw provider\npolicy", "Hardened\nreplay"]
+    values = [406, 496]
     fig, ax = plt.subplots(figsize=(5.2, 3.3), layout="constrained")
     fig.patch.set_facecolor(PAPER)
-    bars = ax.bar(labels, values, color=[GREEN, ORANGE], width=0.58, zorder=2)
+    bars = ax.bar(labels, values, color=[ORANGE, GREEN], width=0.58, zorder=2)
     for bar, value in zip(bars, values, strict=True):
-        ax.text(bar.get_x() + bar.get_width() / 2, value + 12, f"{value}\n({value / 5:.1f}%)", ha="center", color=INK, weight="bold")
-    ax.set_ylim(0, 475)
+        ax.text(bar.get_x() + bar.get_width() / 2, value + 8, f"{value}\n({value / 5:.1f}%)", ha="center", color=INK, weight="bold")
+    ax.set_ylim(0, 550)
     ax.set_ylabel("Records", color=INK)
-    ax.set_title("Exact policy-decision agreement", loc="left", weight="bold", color=INK, pad=12)
+    ax.set_title("Exact policy agreement: raw vs. hardened", loc="left", weight="bold", color=INK, pad=12)
     base_axes(ax)
     fig.savefig(OUT / "policy_match.png", dpi=220, facecolor=PAPER)
     plt.close(fig)

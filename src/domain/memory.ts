@@ -33,6 +33,8 @@ export type MemoryDecisionInput = MemoryCandidate & {
    * and boundaries outrank a model's candidate fields.
    */
   sourceText?: string;
+  /** A proposed excerpt must be a literal span of the transcript it cites. */
+  evidenceIsVerbatim?: boolean;
 };
 
 const uncertaintyPattern =
@@ -40,8 +42,8 @@ const uncertaintyPattern =
 const protectedSelfLabelPattern =
   /\b(?:do not|don't|dont|never)\s+(?:label|call|describe|consider)\s+me\s+(?:as\s+)?[^.?!]*(?:lazy|unmotivated|incompetent|incapable|stupid|bad at)/i;
 
-export function decideMemoryCandidate(input: MemoryDecisionInput): MemoryDecision {
-  if (input.sourceText && protectedSelfLabelPattern.test(input.sourceText)) {
+function sourceBoundaryDecision(sourceText: string | undefined): MemoryDecision | null {
+  if (sourceText && protectedSelfLabelPattern.test(sourceText)) {
     return {
       kind: 'reject',
       nextStatus: 'rejected',
@@ -49,13 +51,28 @@ export function decideMemoryCandidate(input: MemoryDecisionInput): MemoryDecisio
     };
   }
 
-  if (input.sourceText && uncertaintyPattern.test(input.sourceText)) {
+  if (sourceText && uncertaintyPattern.test(sourceText)) {
     return {
       kind: 'clarify',
       nextStatus: 'candidate',
       reason: 'The source explicitly describes this detail as uncertain.',
     };
   }
+
+  return null;
+}
+
+export function decideMemoryCandidate(input: MemoryDecisionInput): MemoryDecision {
+  if (input.evidenceIsVerbatim === false) {
+    return {
+      kind: 'reject',
+      nextStatus: 'rejected',
+      reason: 'Memory evidence must be a verbatim excerpt of the source interaction.',
+    };
+  }
+
+  const sourceDecision = sourceBoundaryDecision(input.sourceText);
+  if (sourceDecision) return sourceDecision;
 
   if (input.isSensitiveInference) {
     return {
@@ -85,6 +102,17 @@ export function decideMemoryCandidate(input: MemoryDecisionInput): MemoryDecisio
     kind: 'accept',
     nextStatus: 'active',
     reason: 'Explicit evidence meets the memory confidence threshold.',
+  };
+}
+
+/** Keeps source uncertainty visible when a provider emits no candidate at all. */
+export function decideNoMemoryCandidate(sourceText: string): MemoryDecision {
+  const sourceDecision = sourceBoundaryDecision(sourceText);
+  if (sourceDecision) return sourceDecision;
+  return {
+    kind: 'reject',
+    nextStatus: 'rejected',
+    reason: 'No explicit memory candidate was extracted.',
   };
 }
 

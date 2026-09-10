@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { canTransitionMemory, decideMemoryCandidate } from '@/domain/memory';
+import {
+  canTransitionMemory,
+  decideMemoryCandidate,
+  decideNoMemoryCandidate,
+} from '@/domain/memory';
 
 describe('memory policy', () => {
   it('accepts explicit, well-supported memory', () => {
@@ -54,6 +58,28 @@ describe('memory policy', () => {
         sourceText: 'I am not certain whether the Signals tutorial is this week or next week.',
       }),
     ).toMatchObject({ kind: 'clarify', nextStatus: 'candidate' });
+  });
+
+  it('keeps an uncertain source in clarification when extraction returns no candidates', () => {
+    expect(
+      decideNoMemoryCandidate(
+        'I am not certain whether the Signals tutorial is this week or next week.',
+      ),
+    ).toMatchObject({ kind: 'clarify', nextStatus: 'candidate' });
+  });
+
+  it('rejects a proposed memory when its evidence is not verbatim source text', () => {
+    expect(
+      decideMemoryCandidate({
+        memoryType: 'fact',
+        canonicalStatement: 'The Algorithms problem set is due Monday.',
+        confidence: 1,
+        evidenceCount: 1,
+        isExplicit: true,
+        isSensitiveInference: false,
+        evidenceIsVerbatim: false,
+      }),
+    ).toMatchObject({ kind: 'reject', nextStatus: 'rejected' });
   });
 
   it('only permits auditable lifecycle transitions', () => {

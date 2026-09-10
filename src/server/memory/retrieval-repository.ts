@@ -6,12 +6,14 @@ import { createTextEmbedding, toPgVector } from '@/server/embeddings/provider';
 import {
   developmentCorpusSubjectKey,
   evaluationFixtureSubjectKey,
+  providerAuditReplaySubjectKey,
   sarvamSmokeSubjectKey,
 } from '@/server/memory/scopes';
 
 type RetrievalOptions = {
   includeEvaluationFixtures?: boolean;
   includeDevelopmentCorpus?: boolean;
+  includeProviderAuditReplay?: boolean;
 };
 
 async function getSemanticScores(query: string) {
@@ -28,7 +30,11 @@ async function getSemanticScores(query: string) {
 
 export async function listRetrievalCandidates(
   query: string,
-  { includeEvaluationFixtures = false, includeDevelopmentCorpus = false }: RetrievalOptions = {},
+  {
+    includeEvaluationFixtures = false,
+    includeDevelopmentCorpus = false,
+    includeProviderAuditReplay = false,
+  }: RetrievalOptions = {},
 ): Promise<RetrievalCandidate[]> {
   const semanticScores = await getSemanticScores(query);
   let queryBuilder = getDatabaseClient()
@@ -40,6 +46,9 @@ export async function listRetrievalCandidates(
   }
   if (!includeDevelopmentCorpus) {
     queryBuilder = queryBuilder.neq('subject_key', developmentCorpusSubjectKey);
+  }
+  if (!includeProviderAuditReplay) {
+    queryBuilder = queryBuilder.neq('subject_key', providerAuditReplaySubjectKey);
   }
   queryBuilder = queryBuilder.neq('subject_key', sarvamSmokeSubjectKey);
   const { data, error } = await queryBuilder;

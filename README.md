@@ -99,6 +99,24 @@ token totals:
 bun run eval:sarvam -- path/to/corpus.jsonl
 ```
 
+### Generated 500-record result
+
+The persisted Sarvam audit recorded 500 raw provider calls. The raw provider
+decision path matched the labelled policy on 406/500 records (81.2%). Kivi then
+replayed those exact stored outputs through its hardened source-boundary policy,
+real persistence, retrieval, and Hey Kivi behavior: 496/500 exact decisions
+(99.2%), 449 active memories, four source-grounded Hey Kivi interactions, and
+no additional provider calls. The remaining four failed explicit-episode cases
+are preserved in the generated result rather than counted as successes.
+
+```bash
+bun run eval:provider-replay -- 6ff8d0f1-ea1a-40a8-b1c7-87fd0d971303
+```
+
+- [Evaluation report PDF](output/pdf/sarvam_500_evaluation.pdf)
+- [Machine-readable end-to-end report](output/evaluation/sarvam_500_end_to_end_report.json)
+- [LaTeX report source](output/evaluation/sarvam_500_evaluation.tex)
+
 The included live smoke evaluation contains three records and is deliberately
 small; its results are a wiring check, not a claim of 500-record model quality.
 Its observed run produced 3/3 expected policy outcomes and zero invalid evidence
@@ -114,6 +132,9 @@ candidate pre-authoring.
 - OpenAI embeddings are optional and never required for the primary local flow.
 - The product does not claim to diagnose learning ability, emotional state, or
   productivity.
+- Provider extraction can still miss an explicit episode. Four such cases remain
+  visible in the 500-record audit and are regression targets, not auto-accepted
+  memories.
 
 ## AI-use disclosure
 

@@ -61,6 +61,18 @@ export async function listProviderEvaluationRecordIds(runId: string): Promise<Se
   return new Set(data.map((record) => record.corpus_record_id));
 }
 
+export async function listProviderEvaluationRecords(runId: string) {
+  const { data, error } = await getDatabaseClient()
+    .from('provider_evaluation_records')
+    .select(
+      'corpus_record_id, transcript, expected_decision, extraction, provider, model, latency_ms, input_tokens, output_tokens, estimated_cost_usd',
+    )
+    .eq('run_id', runId)
+    .order('corpus_record_id');
+  if (error) throw new RepositoryError('list provider evaluation records', error.message);
+  return data;
+}
+
 export async function saveProviderEvaluationRecord(
   runId: string,
   record: StoredProviderEvaluationRecord,

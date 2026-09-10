@@ -5,9 +5,12 @@ import { getDatabaseClient } from '@/server/database/client';
 import { RepositoryError } from '@/server/database/errors';
 import { listRetrievalCandidates } from '@/server/memory/retrieval-repository';
 
-export async function runHeyKivi(request: string) {
+export async function runHeyKivi(
+  request: string,
+  options: { includeProviderAuditReplay?: boolean } = {},
+) {
   const startedAt = performance.now();
-  const candidates = await listRetrievalCandidates(request);
+  const candidates = await listRetrievalCandidates(request, options);
   const retrieval = selectGroundedMemories(candidates);
   const plan = planAssistantResponse(request, retrieval);
   const response = composeAssistantResponse(plan, retrieval);
