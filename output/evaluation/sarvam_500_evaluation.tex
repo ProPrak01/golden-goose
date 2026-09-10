@@ -1,0 +1,45 @@
+% Rebuild: python3 scripts/generate_sarvam_500_figures.py &&
+% (cd output/evaluation && tectonic -X compile --outdir ../pdf sarvam_500_evaluation.tex)
+\documentclass[11pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{booktabs,graphicx,xcolor,array}
+\definecolor{ink}{HTML}{11110F}
+\definecolor{green}{HTML}{236D45}
+\definecolor{acid}{HTML}{D9FF51}
+\title{\textbf{Kivi Provider Evaluation Report}\\\large Sarvam 105B -- 500-record persisted audit run}
+\date{Run ID: 6ff8d0f1-ea1a-40a8-b1c7-87fd0d971303}
+\begin{document}\color{ink}\maketitle
+\section*{Executive summary}
+This report analyses 500 stored Sarvam extraction calls. Every completed record retains raw ASR, formatted text, metadata, parsed extraction, raw provider payload, policy outcome, evidence check, latency, and token use. The exact policy match rate is 81.2\% (406/500). The result is useful but \textbf{not} submission-ready as a safety claim: inferred-trait and uncertain-detail cases require a stricter prompt and policy validation pass.
+\section*{Headline metrics}
+\begin{center}\begin{tabular}{rrrrr}\toprule
+Records & Exact matches & Accepted & Rejected & Invalid evidence spans\\\midrule
+500 & 406 (81.2\%) & 447 & 53 & 6\\\bottomrule
+\end{tabular}\end{center}
+Total provider latency was 576,489 ms across stored calls (median 1,036 ms; p95 2,227 ms); aggregate tokens were 96,470 input and 43,792 output. Cost is intentionally omitted because provider prices were not configured for this run.
+\section*{Outcome by corpus category}
+\begin{center}\includegraphics[width=\textwidth]{figures/category_outcomes.png}\end{center}
+\begin{center}\begin{tabular}{lrrr}\toprule
+Category & Accept & Reject & Expected decision\\\midrule
+Explicit deadlines & 250 & 0 & Accept\\
+Explicit preferences & 80 & 0 & Accept\\
+Explicit episodes & 56 & 4 & Accept\\
+Uncertain details & 11 & 29 & Clarify\\
+Inferred traits & 50 & 20 & Reject\\\bottomrule
+\end{tabular}\end{center}
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[width=.47\textwidth]{figures/policy_match.png} &
+\includegraphics[width=.47\textwidth]{figures/latency_comparison.png}
+\end{tabular}
+\end{center}
+\section*{Interpretation and action}
+The model reliably retained explicit deadlines and preferences. It was weaker on explicit episodes, and it over-retained 50 inferred-trait prompts that should have been rejected. It also converted uncertain details into acceptance or rejection instead of clarification. Before relying on provider-assisted automatic suggestions more broadly, strengthen the extraction prompt, add category-specific adversarial tests, and reject candidate statements whose source explicitly denies the inferred label.
+\begin{enumerate}
+  \item Tighten extraction instructions around explicit negations, for example: ``do not label me as lazy.''
+  \item Create a first-class \emph{clarify} route for incomplete or stale details rather than forcing a retention decision.
+  \item Investigate the six non-verbatim evidence spans and add regression tests for each failure mode.
+\end{enumerate}
+\section*{Audit and reproducibility}
+The audit is persisted locally in \texttt{provider\_evaluation\_runs} and \texttt{provider\_evaluation\_records}. No rerun is needed for later analysis. The evaluation command supports resuming a run by ID and skips already-stored records.
+\end{document}
