@@ -1,4 +1,5 @@
 import { decideMemoryCandidate, type MemoryDecision } from '@/domain/memory';
+import type { Json } from '@/generated/database.types';
 import type { MemoryExtraction } from '@/schemas/memory-extraction';
 import type { TranscriptInput } from '@/schemas/transcript';
 
@@ -10,6 +11,7 @@ export type ProviderRun = {
   inputTokens: number | null;
   outputTokens: number | null;
   estimatedCostUsd: number | null;
+  rawProviderResponse: Json;
 };
 
 export type ProviderEvaluationRecord = {
@@ -31,6 +33,8 @@ type RecordResult = {
   inputTokens: number | null;
   outputTokens: number | null;
   estimatedCostUsd: number | null;
+  rawProviderResponse: Json;
+  extraction: MemoryExtraction;
   passed: boolean | null;
 };
 
@@ -76,6 +80,8 @@ export async function runProviderExtractionEvaluation(
       inputTokens: run.inputTokens,
       outputTokens: run.outputTokens,
       estimatedCostUsd: run.estimatedCostUsd,
+      rawProviderResponse: run.rawProviderResponse,
+      extraction: run.extraction,
       passed:
         record.expectedDecision === undefined ? null : record.expectedDecision === actualDecision,
     });

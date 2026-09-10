@@ -1,4 +1,5 @@
 import { getServerEnvironment } from '@/env';
+import type { Json } from '@/generated/database.types';
 import { memoryExtractionSchema, type MemoryExtraction } from '@/schemas/memory-extraction';
 
 type ExtractionResult = {
@@ -9,6 +10,7 @@ type ExtractionResult = {
   inputTokens: number | null;
   outputTokens: number | null;
   estimatedCostUsd: number | null;
+  rawProviderResponse: Json;
 };
 
 function estimateCostUsd(input: {
@@ -97,5 +99,6 @@ export async function extractMemoriesWithSarvam(
       inputPricePerMillion: environment.SARVAM_INPUT_TOKEN_COST_USD_PER_MILLION,
       outputPricePerMillion: environment.SARVAM_OUTPUT_TOKEN_COST_USD_PER_MILLION,
     }),
+    rawProviderResponse: payload as Json,
   };
 }

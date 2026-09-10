@@ -29,6 +29,7 @@
     "seed": "tsx --conditions=react-server scripts/seed.ts",
     "corpus:import": "tsx --conditions=react-server scripts/import-development-corpus.ts",
     "corpus:import:file": "tsx --conditions=react-server scripts/import-corpus.ts",
+    "corpus:export": "tsx --conditions=react-server scripts/export-development-corpus-jsonl.ts",
     "corpus:verify": "tsx --conditions=react-server scripts/verify-development-corpus.ts",
     "eval": "tsx scripts/evaluate.ts",
     "eval:database": "tsx --conditions=react-server scripts/evaluate-database.ts",

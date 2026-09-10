@@ -263,6 +263,116 @@ export type Database = {
           },
         ];
       };
+      provider_evaluation_records: {
+        Row: {
+          actual_decision: string;
+          candidate_count: number;
+          corpus_record_id: string;
+          created_at: string;
+          estimated_cost_usd: number | null;
+          evidence_valid: boolean;
+          expected_decision: string | null;
+          extraction: Json;
+          id: string;
+          input_tokens: number | null;
+          latency_ms: number;
+          model: string;
+          output_tokens: number | null;
+          provider: string;
+          raw_provider_response: Json;
+          run_id: string;
+          transcript: Json;
+        };
+        Insert: {
+          actual_decision: string;
+          candidate_count: number;
+          corpus_record_id: string;
+          created_at?: string;
+          estimated_cost_usd?: number | null;
+          evidence_valid: boolean;
+          expected_decision?: string | null;
+          extraction: Json;
+          id?: string;
+          input_tokens?: number | null;
+          latency_ms: number;
+          model: string;
+          output_tokens?: number | null;
+          provider: string;
+          raw_provider_response: Json;
+          run_id: string;
+          transcript: Json;
+        };
+        Update: {
+          actual_decision?: string;
+          candidate_count?: number;
+          corpus_record_id?: string;
+          created_at?: string;
+          estimated_cost_usd?: number | null;
+          evidence_valid?: boolean;
+          expected_decision?: string | null;
+          extraction?: Json;
+          id?: string;
+          input_tokens?: number | null;
+          latency_ms?: number;
+          model?: string;
+          output_tokens?: number | null;
+          provider?: string;
+          raw_provider_response?: Json;
+          run_id?: string;
+          transcript?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'provider_evaluation_records_run_id_fkey';
+            columns: ['run_id'];
+            isOneToOne: false;
+            referencedRelation: 'provider_evaluation_runs';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      provider_evaluation_runs: {
+        Row: {
+          completed_at: string | null;
+          corpus_name: string;
+          corpus_sha256: string;
+          created_at: string;
+          id: string;
+          model: string;
+          provider: string;
+          record_count: number;
+          started_at: string;
+          status: string;
+          summary: Json | null;
+        };
+        Insert: {
+          completed_at?: string | null;
+          corpus_name: string;
+          corpus_sha256: string;
+          created_at?: string;
+          id?: string;
+          model: string;
+          provider: string;
+          record_count: number;
+          started_at?: string;
+          status: string;
+          summary?: Json | null;
+        };
+        Update: {
+          completed_at?: string | null;
+          corpus_name?: string;
+          corpus_sha256?: string;
+          created_at?: string;
+          id?: string;
+          model?: string;
+          provider?: string;
+          record_count?: number;
+          started_at?: string;
+          status?: string;
+          summary?: Json | null;
+        };
+        Relationships: [];
+      };
       retrieval_runs: {
         Row: {
           candidates: Json;

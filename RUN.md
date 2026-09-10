@@ -105,6 +105,14 @@ bun run eval:sarvam -- path/to/corpus.jsonl
 
 `bun run eval:sarvam` runs raw ASR and formatted text through Sarvam extraction and Kivi's decision policy without writing to the database. A corpus can include optional `expectedDecision` (`accept`, `clarify`, or `reject`) either at the top level or in `context`. The report includes exact-policy pass rate, acceptance precision/recall, verbatim-evidence validity, candidate count, latency, and token totals. Unlabelled private records remain usable and are reported without affecting scored metrics.
 
+For an auditable long provider run, the same command persists every completed record in local Postgres and can resume without repeating stored calls:
+
+```bash
+bun run eval:sarvam -- path/to/corpus.jsonl --resume run-id
+```
+
+Each stored record includes original transcript data, parsed extraction, raw provider response, policy result, evidence check, latency, token use, and estimated cost when configured.
+
 ## Optional hybrid semantic retrieval
 
 The default mode is deterministic lexical retrieval and needs no hosted AI credential. To enable OpenAI embeddings for newly captured or corrected memories, update `.env.local` before creating those memories:

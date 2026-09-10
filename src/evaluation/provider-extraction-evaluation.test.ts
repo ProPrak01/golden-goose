@@ -49,6 +49,7 @@ describe('provider extraction evaluation', () => {
         inputTokens: 20,
         outputTokens: 10,
         estimatedCostUsd: 0.001,
+        rawProviderResponse: { choices: [] },
       }),
     );
 
@@ -98,6 +99,7 @@ describe('provider extraction evaluation', () => {
         inputTokens: null,
         outputTokens: null,
         estimatedCostUsd: null,
+        rawProviderResponse: { choices: [] },
       }),
     );
 
