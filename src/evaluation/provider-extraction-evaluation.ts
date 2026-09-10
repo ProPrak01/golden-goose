@@ -60,7 +60,11 @@ export async function runProviderExtractionEvaluation(
   for (const record of records) {
     const run = await extract(record.transcript.formattedText);
     const decisions = run.extraction.candidates.map((candidate) =>
-      decideMemoryCandidate({ ...candidate, evidenceCount: 1 }),
+      decideMemoryCandidate({
+        ...candidate,
+        evidenceCount: 1,
+        sourceText: record.transcript.formattedText,
+      }),
     );
     const actualDecision = combineDecisions(decisions);
     const evidenceValid = run.extraction.candidates.every((candidate) =>

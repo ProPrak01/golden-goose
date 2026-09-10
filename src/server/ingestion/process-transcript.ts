@@ -24,7 +24,7 @@ export async function processTranscript(input: {
   const transcript = transcriptInputSchema.parse(input.transcript);
   const candidate = memoryCandidateSchema.parse(input.candidate);
   const storedTranscript = await insertTranscript(transcript);
-  const decision = decideMemoryCandidate(candidate);
+  const decision = decideMemoryCandidate({ ...candidate, sourceText: transcript.formattedText });
   const memoryId = await recordMemoryDecision({
     candidate,
     decision,
@@ -63,7 +63,7 @@ export async function processTranscriptCandidates(input: {
   }
   for (const item of input.candidates) {
     const candidate = memoryCandidateSchema.parse(item.candidate);
-    const decision = decideMemoryCandidate(candidate);
+    const decision = decideMemoryCandidate({ ...candidate, sourceText: transcript.formattedText });
     const memoryId = await recordMemoryDecision({
       candidate,
       decision,

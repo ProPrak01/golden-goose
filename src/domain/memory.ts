@@ -27,7 +27,36 @@ export type MemoryDecision =
   | { kind: 'reject'; reason: string; nextStatus: 'rejected' }
   | { kind: 'clarify'; reason: string; nextStatus: 'candidate' };
 
-export function decideMemoryCandidate(input: MemoryCandidate): MemoryDecision {
+export type MemoryDecisionInput = MemoryCandidate & {
+  /**
+   * Optional full source text. When present, explicit source-level uncertainty
+   * and boundaries outrank a model's candidate fields.
+   */
+  sourceText?: string;
+};
+
+const uncertaintyPattern =
+  /\b(?:i(?:'m| am) not (?:sure|certain)|not (?:sure|certain) whether|maybe|might be)\b/i;
+const protectedSelfLabelPattern =
+  /\b(?:do not|don't|dont|never)\s+(?:label|call|describe|consider)\s+me\s+(?:as\s+)?[^.?!]*(?:lazy|unmotivated|incompetent|incapable|stupid|bad at)/i;
+
+export function decideMemoryCandidate(input: MemoryDecisionInput): MemoryDecision {
+  if (input.sourceText && protectedSelfLabelPattern.test(input.sourceText)) {
+    return {
+      kind: 'reject',
+      nextStatus: 'rejected',
+      reason: 'Kivi respects the user’s explicit boundary against personal labels.',
+    };
+  }
+
+  if (input.sourceText && uncertaintyPattern.test(input.sourceText)) {
+    return {
+      kind: 'clarify',
+      nextStatus: 'candidate',
+      reason: 'The source explicitly describes this detail as uncertain.',
+    };
+  }
+
   if (input.isSensitiveInference) {
     return {
       kind: 'reject',
