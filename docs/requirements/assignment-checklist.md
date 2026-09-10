@@ -4,25 +4,25 @@ This is the implementation and review checklist derived from the supplied assign
 
 ## Product requirements
 
-- [ ] Build one working end-to-end product, not a prototype, static demo, notebook, prompt collection, or architecture-only proposal.
-- [ ] Start from one genuinely useful use case and keep the capability set narrow.
-- [ ] Make the ordinary-use experience clear.
-- [ ] Make clear how memory changes later behaviour.
-- [ ] Define the boundary between regular dictation and Hey Kivi.
-- [ ] Handle incomplete or incorrect understanding in a user-legible way.
-- [ ] Keep the user in control without making them administer the system.
-- [ ] Use a normal-user interface; do not require a developer console for the product to make sense.
+- [x] Build one working end-to-end product, not a prototype, static demo, notebook, prompt collection, or architecture-only proposal.
+- [x] Start from one genuinely useful use case and keep the capability set narrow.
+- [x] Make the ordinary-use experience clear.
+- [x] Make clear how memory changes later behaviour.
+- [x] Define the boundary between regular dictation and Hey Kivi.
+- [x] Handle incomplete or incorrect understanding in a user-legible way.
+- [x] Keep the user in control without making them administer the system.
+- [x] Use a normal-user interface; do not require a developer console for the product to make sense.
 
 ## Semantic-memory system requirements
 
-- [ ] Decide what Kivi learns and deliberately ignores.
-- [ ] Implement a lifecycle for creating, representing, storing, changing, removing, and rejecting memories.
-- [ ] Model the relation between facts, episodes, and preferences used by the product.
-- [ ] Retrieve relevant understanding when a person uses Hey Kivi.
-- [ ] Make memory influence a visible response, tool use, or other user-facing behaviour.
-- [ ] Make it possible to inspect why memory did or did not affect a result.
-- [ ] Use real state, persistence, retrieval, and model decisions rather than a prepared demonstration sequence.
-- [ ] Implement only the Hey Kivi tools required by the chosen use case.
+- [x] Decide what Kivi learns and deliberately ignores.
+- [x] Implement a lifecycle for creating, representing, storing, changing, removing, and rejecting memories.
+- [x] Model the relation between facts, episodes, and preferences used by the product.
+- [x] Retrieve relevant understanding when a person uses Hey Kivi.
+- [x] Make memory influence a visible response, tool use, or other user-facing behaviour.
+- [x] Make it possible to inspect why memory did or did not affect a result.
+- [x] Use real state, persistence, retrieval, and model decisions rather than a prepared demonstration sequence.
+- [x] Implement only the Hey Kivi tools required by the chosen use case.
 
 ## Development corpus and evaluation requirements
 

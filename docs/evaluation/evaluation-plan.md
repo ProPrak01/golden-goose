@@ -67,3 +67,18 @@ where its three explicit sources are deliberately distinct.
 ## Database-backed contract
 
 `bun run eval:database` refreshes only the `evaluation-fixture-v1` local fixture scope, then executes retrieval through the real repository and local Postgres. It verifies active-memory retrieval, soft-expired exclusion, supersession propagation, and weak-evidence exclusion while reporting per-case latency. It never clears user-scoped memory.
+
+## Provider extraction harness
+
+`bun run eval:sarvam -- path/to/corpus.jsonl` evaluates a labelled or unlabelled
+JSONL corpus without database writes. Each line uses the transcript import shape
+(`rawAsr`, `formattedText`, timestamp, source, and context). An optional
+`expectedDecision` at the top level or in context enables exact policy scoring.
+
+The runner calls the configured Sarvam provider, validates its structured output,
+applies the same deterministic memory policy used by ingestion, and checks that
+every returned evidence excerpt is a literal span of the formatted transcript.
+It reports per-record provider/model data, candidate count, policy outcome,
+evidence validity, latency, and token usage alongside aggregate pass rate,
+acceptance precision/recall, and evidence failures. A corpus with no labels is
+still useful for a transparent operational trace but does not affect score rates.

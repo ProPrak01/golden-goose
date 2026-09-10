@@ -1,23 +1,136 @@
-# Golden Goose
+# Kivi — evidence-first academic continuity
 
-An end-to-end, trustworthy semantic-memory experience for Hey Kivi.
+Kivi is a local, end-to-end semantic-memory experience for one focused job:
+helping a student decide what deserves attention today without inventing a
+story about them. It retains only explicit academic commitments, preferences,
+outcomes, and lessons; every recommendation exposes the source it relies on.
 
-## Foundation
+This repository is the Part Two implementation for the Hey Kivi Golden Goose
+task. It is a working product with real local persistence, retrieval,
+corrections, lifecycle controls, model-assisted extraction, and reproducible
+evaluation—not a scripted demo.
 
-- Next.js 16, React 19, Bun, and strict TypeScript
-- Local Supabase/PostgreSQL managed through Docker
-- Zod validation at every system boundary
-- Biome, Vitest, Playwright, production builds, and type-checking gates
+## What a person can do
 
-## Development
+1. **Capture** a raw statement, ask Sarvam to suggest explicit memory candidates,
+   choose and edit a suggestion, then review it before saving.
+2. **Ask Kivi** for next academic actions. Kivi selects only active, grounded
+   memories, answers with source evidence, and clarifies or abstains when it
+   cannot support an answer.
+3. **Control memory**: inspect its original source, correct a record, soft-expire
+   it, or permanently delete it.
+4. Use **Incognito** capture when a statement must stay in the local form: it is
+   not sent to Sarvam, saved, or used in later Hey Kivi answers.
+
+## Product boundary
+
+Kivi stores an item only when the user explicitly states a durable academic
+fact, preference, episode, or pattern with enough evidence. It deliberately
+does not infer emotion, motivation, personality, competence, or a general
+conclusion from a score, tone, or one missed deadline. Suggestions are never
+persisted automatically.
+
+The academic vocabulary is intentional for this first use case. The data model
+can later apply to professional projects, decisions, meetings, and deliverables
+without relaxing the evidence and user-control rules.
+
+## Architecture
+
+```text
+Capture / import
+  -> Zod validation
+  -> Sarvam structured extraction (optional, server-only)
+  -> explicit-memory policy
+  -> Supabase/Postgres + pgvector-ready provenance store
+  -> active-memory retrieval gates
+  -> source-grounded Hey Kivi response
+  -> correction, expiry, or deletion lifecycle events
+```
+
+- **Next.js 16 / React 19 / Bun / strict TypeScript** for the product runtime.
+- **Local Supabase/Postgres** in Docker for transcripts, memories, evidence,
+  decisions, lifecycle changes, and inspection.
+- **Sarvam `sarvam-105b`** is used only for structured candidate extraction when
+  `LLM_PROVIDER=sarvam` and `SARVAM_API` are configured. Model output is Zod
+  validated and routed through the same deterministic policy as imports.
+- **Retrieval** has active-status, confidence, evidence, lexical relevance, and
+  optional pgvector embedding gates. It has a deterministic lexical fallback.
+- **Quality** uses Biome, strict `tsc`, Vitest, Playwright, and a production build.
+
+See [architecture decisions](docs/architecture/tech-stack.md) and the
+[data model](docs/architecture/data-model.md) for detail.
+
+## Quick start
+
+The declared primary review path is fully local:
 
 ```bash
 bun install
 bun run infra:start
 bun run db:reset
+bun run db:types
+bun run seed
 bun run dev
 ```
 
-Run the quality suite with `bun run check`.
+Open http://localhost:3000. For precise environment variables, corpus import,
+evaluation, inspection, and reset commands, follow [RUN.md](RUN.md).
 
-For a clean local review, use [RUN.md](RUN.md). See [docs/README.md](docs/README.md) for the product, architecture, evaluation, and reviewer-operation plan.
+## Evaluation and corpus readiness
+
+The repository includes a versioned 500-record development corpus: 390 explicit
+supportable memories, 40 uncertain details, and 70 inferred-trait attempts.
+It preserves raw ASR, formatted text, context metadata, expected policy outcome,
+candidate, provenance, and decision state in an isolated local scope.
+
+```bash
+bun run corpus:import
+bun run corpus:verify
+bun run eval:database
+bun run eval:corpus
+```
+
+For a labelled external/private JSONL corpus, the provider harness evaluates the
+non-persisting pipeline `formatted transcript -> Sarvam -> policy` and reports
+policy pass rate, acceptance precision/recall, evidence validity, latency, and
+token totals:
+
+```bash
+bun run eval:sarvam -- path/to/corpus.jsonl
+```
+
+The included live smoke evaluation contains three records and is deliberately
+small; its results are a wiring check, not a claim of 500-record model quality.
+Its observed run produced 3/3 expected policy outcomes and zero invalid evidence
+spans. A private evaluator corpus can be imported with no source changes or
+candidate pre-authoring.
+
+## Constraints and known limits
+
+- This submission is single-user/local-first; authentication and sync are out of
+  scope for the focused prototype.
+- Sarvam extraction needs a user-supplied server-side API key. Manual reviewed
+  capture and deterministic retrieval remain available without it.
+- OpenAI embeddings are optional and never required for the primary local flow.
+- The product does not claim to diagnose learning ability, emotional state, or
+  productivity.
+
+## AI-use disclosure
+
+**In the product:** Sarvam is used only for structured memory-candidate
+extraction. It does not make final persistence decisions: deterministic policy
+checks, user review, and provenance gates remain authoritative.
+
+**During development:** AI coding assistance was used for implementation and
+documentation iteration. The application behaviour, safety boundaries, local
+evaluation output, and test results were reviewed and verified in this
+repository. The Part One positioning and vision files under `docs/brain/` are
+reserved for the applicant's independent writing and intentionally remain
+unwritten here.
+
+## Repository map
+
+- [RUN.md](RUN.md) — exact local reviewer route.
+- [Reviewer demo](docs/operations/reviewer-demo.md) — a concise walk-through.
+- [Evaluation plan](docs/evaluation/evaluation-plan.md) — metrics and corpus design.
+- [Assignment checklist](docs/requirements/assignment-checklist.md) — requirement traceability.

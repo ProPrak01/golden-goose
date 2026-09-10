@@ -10,6 +10,7 @@
 | Styling | Tailwind CSS and a small custom component system |
 | Database platform | Local Supabase backed by PostgreSQL |
 | Database capabilities | PostgreSQL structured metadata filtering and pgvector cosine similarity for opt-in hybrid retrieval |
+| Candidate extraction | Optional Sarvam `sarvam-105b` structured JSON extraction; user review and deterministic policy remain authoritative |
 | Embeddings | Optional OpenAI `text-embedding-3-small`; deterministic lexical fallback when no key/provider is configured |
 | Local infrastructure | Docker-compatible runtime and Supabase CLI |
 | Database workflow | Versioned migrations, reproducible seeds, generated database types, and local Studio inspection |
@@ -25,6 +26,7 @@
 - Keep all data access on the server; never expose privileged database credentials in the browser.
 - Keep domain policy separate from UI and provider integrations so memory decisions are testable without a model call.
 - Treat every external/model input as untrusted until validated by Zod.
+- Disable provider reasoning for short structured extraction calls and retry one empty or invalid response; retain only validated JSON candidates.
 - Record provenance, model/version metadata, latency, usage, and decision reasons with each consequential run.
 - Keep lexical retrieval as a deterministic fallback and use vector similarity only alongside active-status, confidence, and evidence gates.
 - Use Supabase services only where they advance product reliability, inspection, retrieval, or reproducibility.

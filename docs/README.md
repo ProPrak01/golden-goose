@@ -10,6 +10,7 @@ This directory separates applicant-owned Part One writing from the product, engi
 4. [Delivery roadmap](product/delivery-roadmap.md)
 5. [Evaluation requirements](evaluation/evaluation-plan.md)
 6. [Reviewer operation plan](operations/reviewer-workflow.md)
+7. [Ten-minute reviewer demo](operations/reviewer-demo.md)
 
 ## Applicant-owned Part One documents
 
