@@ -26,6 +26,7 @@ const requestSchema = z.object({
       latencyMs: z.number().int().nonnegative(),
       inputTokens: z.number().int().nonnegative().nullable(),
       outputTokens: z.number().int().nonnegative().nullable(),
+      estimatedCostUsd: z.number().nonnegative().nullable(),
     })
     .optional(),
 });

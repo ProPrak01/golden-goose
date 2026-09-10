@@ -48,6 +48,7 @@ describe('provider extraction evaluation', () => {
         latencyMs: 120,
         inputTokens: 20,
         outputTokens: 10,
+        estimatedCostUsd: 0.001,
       }),
     );
 
@@ -60,6 +61,7 @@ describe('provider extraction evaluation', () => {
       totalCandidates: 1,
       inputTokens: 40,
       outputTokens: 20,
+      estimatedCostUsd: 0.002,
     });
   });
 
@@ -95,6 +97,7 @@ describe('provider extraction evaluation', () => {
         latencyMs: 120,
         inputTokens: null,
         outputTokens: null,
+        estimatedCostUsd: null,
       }),
     );
 

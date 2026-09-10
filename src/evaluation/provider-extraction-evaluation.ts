@@ -9,6 +9,7 @@ export type ProviderRun = {
   latencyMs: number;
   inputTokens: number | null;
   outputTokens: number | null;
+  estimatedCostUsd: number | null;
 };
 
 export type ProviderEvaluationRecord = {
@@ -29,6 +30,7 @@ type RecordResult = {
   latencyMs: number;
   inputTokens: number | null;
   outputTokens: number | null;
+  estimatedCostUsd: number | null;
   passed: boolean | null;
 };
 
@@ -73,6 +75,7 @@ export async function runProviderExtractionEvaluation(
       latencyMs: run.latencyMs,
       inputTokens: run.inputTokens,
       outputTokens: run.outputTokens,
+      estimatedCostUsd: run.estimatedCostUsd,
       passed:
         record.expectedDecision === undefined ? null : record.expectedDecision === actualDecision,
     });
@@ -101,6 +104,9 @@ export async function runProviderExtractionEvaluation(
       maxLatencyMs: Math.max(0, ...results.map((result) => result.latencyMs)),
       inputTokens: results.reduce((total, result) => total + (result.inputTokens ?? 0), 0),
       outputTokens: results.reduce((total, result) => total + (result.outputTokens ?? 0), 0),
+      estimatedCostUsd: results.some((result) => result.estimatedCostUsd === null)
+        ? null
+        : results.reduce((total, result) => total + (result.estimatedCostUsd ?? 0), 0),
     },
     results,
   };

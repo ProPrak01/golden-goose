@@ -18,6 +18,7 @@ export async function processTranscript(input: {
     latencyMs: number;
     inputTokens: number | null;
     outputTokens: number | null;
+    estimatedCostUsd: number | null;
   };
 }) {
   const transcript = transcriptInputSchema.parse(input.transcript);
@@ -47,6 +48,7 @@ export async function processTranscriptCandidates(input: {
     latencyMs: number;
     inputTokens: number | null;
     outputTokens: number | null;
+    estimatedCostUsd: number | null;
   };
 }) {
   const transcript = transcriptInputSchema.parse(input.transcript);

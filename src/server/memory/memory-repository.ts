@@ -16,6 +16,7 @@ export async function recordMemoryDecision(input: {
     latencyMs: number;
     inputTokens: number | null;
     outputTokens: number | null;
+    estimatedCostUsd: number | null;
   };
 }): Promise<string | null> {
   const database = getDatabaseClient();
@@ -61,6 +62,7 @@ export async function recordMemoryDecision(input: {
     latency_ms: input.modelRun?.latencyMs ?? null,
     input_tokens: input.modelRun?.inputTokens ?? null,
     output_tokens: input.modelRun?.outputTokens ?? null,
+    estimated_cost_usd: input.modelRun?.estimatedCostUsd ?? null,
   });
   if (decisionError) throw new RepositoryError('record memory decision', decisionError.message);
 
@@ -77,6 +79,7 @@ export async function recordNoMemoryDecision(input: {
     latencyMs: number;
     inputTokens: number | null;
     outputTokens: number | null;
+    estimatedCostUsd: number | null;
   };
 }): Promise<void> {
   const { error } = await getDatabaseClient()
@@ -92,6 +95,7 @@ export async function recordNoMemoryDecision(input: {
       latency_ms: input.modelRun.latencyMs,
       input_tokens: input.modelRun.inputTokens,
       output_tokens: input.modelRun.outputTokens,
+      estimated_cost_usd: input.modelRun.estimatedCostUsd,
     });
   if (error) throw new RepositoryError('record no-memory decision', error.message);
 }

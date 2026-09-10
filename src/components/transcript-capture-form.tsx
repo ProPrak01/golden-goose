@@ -25,6 +25,7 @@ type ModelRun = {
   latencyMs: number;
   inputTokens: number | null;
   outputTokens: number | null;
+  estimatedCostUsd: number | null;
 };
 
 type ExtractedProposal = Proposal & { excerpt: string };

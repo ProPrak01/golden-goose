@@ -8,6 +8,8 @@ const serverEnvironmentSchema = z.object({
   EMBEDDING_PROVIDER: z.enum(['deterministic', 'openai']).default('deterministic'),
   OPENAI_API_KEY: z.string().min(1).optional(),
   SARVAM_API: z.string().min(1).optional(),
+  SARVAM_INPUT_TOKEN_COST_USD_PER_MILLION: z.coerce.number().nonnegative().optional(),
+  SARVAM_OUTPUT_TOKEN_COST_USD_PER_MILLION: z.coerce.number().nonnegative().optional(),
 });
 
 export type ServerEnvironment = z.infer<typeof serverEnvironmentSchema>;

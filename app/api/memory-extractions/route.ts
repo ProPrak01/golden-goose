@@ -17,6 +17,7 @@ export async function POST(request: Request) {
         latencyMs: modelRun.latencyMs,
         inputTokens: modelRun.inputTokens,
         outputTokens: modelRun.outputTokens,
+        estimatedCostUsd: modelRun.estimatedCostUsd,
       },
     });
   } catch (error) {

@@ -8,7 +8,29 @@ type ExtractionResult = {
   latencyMs: number;
   inputTokens: number | null;
   outputTokens: number | null;
+  estimatedCostUsd: number | null;
 };
+
+function estimateCostUsd(input: {
+  inputTokens: number | null;
+  outputTokens: number | null;
+  inputPricePerMillion: number | undefined;
+  outputPricePerMillion: number | undefined;
+}): number | null {
+  if (
+    input.inputTokens === null ||
+    input.outputTokens === null ||
+    input.inputPricePerMillion === undefined ||
+    input.outputPricePerMillion === undefined
+  ) {
+    return null;
+  }
+  return (
+    (input.inputTokens * input.inputPricePerMillion +
+      input.outputTokens * input.outputPricePerMillion) /
+    1_000_000
+  );
+}
 
 export async function extractMemoriesWithSarvam(
   formattedText: string,
@@ -60,12 +82,20 @@ export async function extractMemoriesWithSarvam(
     if (attempt === 0) return extractMemoriesWithSarvam(formattedText, 1);
     throw new Error(`Sarvam returned an invalid memory extraction: ${extraction.error.message}`);
   }
+  const inputTokens = payload.usage?.prompt_tokens ?? null;
+  const outputTokens = payload.usage?.completion_tokens ?? null;
   return {
     extraction: extraction.data,
     provider: 'sarvam',
     model: 'sarvam-105b',
     latencyMs: Math.round(performance.now() - startedAt),
-    inputTokens: payload.usage?.prompt_tokens ?? null,
-    outputTokens: payload.usage?.completion_tokens ?? null,
+    inputTokens,
+    outputTokens,
+    estimatedCostUsd: estimateCostUsd({
+      inputTokens,
+      outputTokens,
+      inputPricePerMillion: environment.SARVAM_INPUT_TOKEN_COST_USD_PER_MILLION,
+      outputPricePerMillion: environment.SARVAM_OUTPUT_TOKEN_COST_USD_PER_MILLION,
+    }),
   };
 }

@@ -27,6 +27,15 @@ EMBEDDING_PROVIDER=deterministic
 
 `SUPABASE_SERVICE_ROLE_KEY` is server-only. Do not use it in browser code or commit `.env.local`.
 
+If you want Sarvam reports and persisted decisions to include an estimated USD cost, set both prices in `.env.local` using the provider price current at the time of the run:
+
+```bash
+SARVAM_INPUT_TOKEN_COST_USD_PER_MILLION=your_current_input_price
+SARVAM_OUTPUT_TOKEN_COST_USD_PER_MILLION=your_current_output_price
+```
+
+Both values are deliberately unset by default; Kivi reports usage tokens but does not invent a provider price.
+
 ## Initialize the database
 
 ```bash
