@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module';
 import { createDevelopmentCorpus } from '@/corpus/development-corpus';
 import { getDatabaseClient } from '@/server/database/client';
+import { diffStorageSnapshots, getKiviStorageSnapshot } from '@/server/database/storage-metrics';
 import { processTranscript } from '@/server/ingestion/process-transcript';
 import { developmentCorpusSourceApp, developmentCorpusSubjectKey } from '@/server/memory/scopes';
 
@@ -52,6 +53,7 @@ async function main() {
   const corpus = createDevelopmentCorpus();
   const startedAt = performance.now();
   await clearDevelopmentCorpus();
+  const storageBeforeImport = await getKiviStorageSnapshot();
 
   const results = [];
   for (const item of corpus) {
@@ -72,6 +74,7 @@ async function main() {
     },
     { accept: 0, clarify: 0, reject: 0 },
   );
+  const storageAfterImport = await getKiviStorageSnapshot();
 
   console.info(
     JSON.stringify(
@@ -84,6 +87,9 @@ async function main() {
         averageRecordLatencyMs: Number(
           ((performance.now() - startedAt) / corpus.length).toFixed(2),
         ),
+        storageBeforeImport,
+        storageAfterImport,
+        storageDelta: diffStorageSnapshots(storageBeforeImport, storageAfterImport),
       },
       null,
       2,

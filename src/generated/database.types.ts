@@ -382,6 +382,16 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      get_kivi_storage_metrics: {
+        Args: never;
+        Returns: {
+          index_bytes: number;
+          relation_name: string;
+          row_count: number;
+          table_bytes: number;
+          total_bytes: number;
+        }[];
+      };
       match_memory_embeddings: {
         Args: { match_count?: number; query_embedding: string };
         Returns: {

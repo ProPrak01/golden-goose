@@ -45,6 +45,8 @@ Each result must retain:
 - Database growth
 - Failure categories with representative inspectable cases
 
+The 500-record importer reports exact local Postgres table and index bytes before and after a clean corpus import, including a per-relation row and storage delta.
+
 ## Current deterministic baseline
 
 `bun run eval` runs the versioned baseline corpus and prints a machine-readable report. The current cases validate grounded fact retrieval, general planning with supported evidence, soft-expired and superseded memory exclusion, weak-evidence exclusion, unrelated-request abstention, ambiguous-request clarification, and inferred-trait rejection.

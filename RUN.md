@@ -101,6 +101,8 @@ bun run eval:sarvam -- path/to/corpus.jsonl
 
 `bun run eval:corpus` queries the isolated 500-record `development-corpus-v1` scope through the real retrieval and response logic. It reports outcomes, selected evidence, response text, and latency without exposing that corpus in normal Kivi use.
 
+`bun run corpus:import` also prints an exact local Postgres storage snapshot before and after the clean 500-record import, plus the per-table row and byte delta. This measures table and index growth across Kivi's core data relations.
+
 `bun run eval:sarvam` runs raw ASR and formatted text through Sarvam extraction and Kivi's decision policy without writing to the database. A corpus can include optional `expectedDecision` (`accept`, `clarify`, or `reject`) either at the top level or in `context`. The report includes exact-policy pass rate, acceptance precision/recall, verbatim-evidence validity, candidate count, latency, and token totals. Unlabelled private records remain usable and are reported without affecting scored metrics.
 
 ## Optional hybrid semantic retrieval
