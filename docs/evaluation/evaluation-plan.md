@@ -84,3 +84,20 @@ It reports per-record provider/model data, candidate count, policy outcome,
 evidence validity, latency, and token usage alongside aggregate pass rate,
 acceptance precision/recall, and evidence failures. A corpus with no labels is
 still useful for a transparent operational trace but does not affect score rates.
+
+## Persisted provider replay
+
+The stored 500-call Sarvam audit can be replayed through the real persistence,
+retrieval, and Hey Kivi response path without another provider request:
+
+```bash
+bun run eval:provider-replay -- 6ff8d0f1-ea1a-40a8-b1c7-87fd0d971303
+```
+
+The replay writes `output/evaluation/sarvam_500_end_to_end_report.json` and
+uses the isolated `provider-audit-replay-v1` scope. Its generated record trace
+includes source transcript IDs, every replayed memory decision, resulting memory
+IDs, storage growth, and four persisted Hey Kivi outcomes. The committed audit
+records both the raw provider result (406/500 exact policy matches) and the
+hardened source-boundary replay (496/500). The four remaining missed explicit
+episodes stay in the report as failures.

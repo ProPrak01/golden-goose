@@ -52,4 +52,4 @@ This is the implementation and review checklist derived from the supplied assign
 - [x] Include a RUN.md with one declared primary review method.
 - [x] Include .env.example with precisely named model environment variables, if required.
 - [x] Document install, migrate, seed, start, primary interactions, evaluation, corpus import, inspection, and reset commands.
-- [ ] Test the complete reviewer journey from the final commit.
+- [x] Test the complete reviewer journey from the final commit (formatting, lint, strict types, 31 unit tests, production build, and 6 Playwright flows).

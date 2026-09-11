@@ -62,3 +62,16 @@ This runs three deliberately small labelled examples through Sarvam and reports
 the extraction-policy result, evidence validity, tokens, and latency. For a
 private evaluator corpus, use its JSONL path instead. The runner performs no
 database writes.
+
+## 6. Inspect the persisted 500-record provider replay — optional, 2 minutes
+
+The committed machine-readable report was generated from the stored provider
+audit and can be regenerated without another Sarvam request:
+
+```bash
+bun run eval:provider-replay -- 6ff8d0f1-ea1a-40a8-b1c7-87fd0d971303
+```
+
+Inspect `output/evaluation/sarvam_500_end_to_end_report.json` for the source
+run, each memory decision, generated memory IDs, database growth, and the four
+Hey Kivi answers. This scope is intentionally excluded from normal user reads.
