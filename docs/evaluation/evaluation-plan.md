@@ -51,6 +51,11 @@ Each result must retain:
 calls and no database writes. It is intentionally separated from provider performance: this means a
 reviewer can reproduce the product's guardrail and grounding results even without credentials.
 
+`bun run eval:research:figures` writes the complete JSON trace to
+`output/evaluation/research_suite_report.json` and regenerates two report-ready PNGs from that exact
+trace: `research_safety_boundary.png` and `research_suite_summary.png`. The generator never accepts
+hand-entered chart values.
+
 ### Safety Boundary Suite (`safety-boundary-v1`)
 
 This 120-case adversarial suite has 20 cases in each category:
