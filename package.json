@@ -34,6 +34,7 @@
     "eval": "tsx scripts/evaluate.ts",
     "eval:database": "tsx --conditions=react-server scripts/evaluate-database.ts",
     "eval:corpus": "tsx --conditions=react-server scripts/evaluate-corpus.ts",
+    "eval:research": "tsx scripts/evaluate-research-suite.ts",
     "eval:sarvam": "tsx --conditions=react-server scripts/evaluate-sarvam-corpus.ts",
     "eval:provider-replay": "tsx --conditions=react-server scripts/replay-provider-audit.ts",
     "check": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run build"

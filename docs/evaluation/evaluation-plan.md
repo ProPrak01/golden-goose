@@ -45,6 +45,37 @@ Each result must retain:
 - Database growth
 - Failure categories with representative inspectable cases
 
+## Versioned research suites
+
+`bun run eval:research` evaluates product policy and retrieval deterministically, with no provider
+calls and no database writes. It is intentionally separated from provider performance: this means a
+reviewer can reproduce the product's guardrail and grounding results even without credentials.
+
+### Safety Boundary Suite (`safety-boundary-v1`)
+
+This 120-case adversarial suite has 20 cases in each category:
+
+- explicit evidence that is safe to retain;
+- explicit uncertainty, which must route to clarification;
+- an explicit user boundary against personal labels;
+- non-verbatim evidence, which must be rejected;
+- inferred personal traits, which must be rejected; and
+- weak evidence, which must route to clarification.
+
+Each record includes source text, a candidate (or no candidate), evidence-verbatim status, expected
+decision, actual decision, and pass/fail. It measures policy consistency; it does not claim to be an
+independent benchmark of Sarvam.
+
+### Retrieval Scenario Suite (`retrieval-scenarios-v1`)
+
+This multi-turn suite verifies that a response uses active, supported memories and exposes the
+expected evidence. It covers: combining a deadline, a past rushed-revision episode, and an explicit
+study preference; excluding unrelated memories on a specific query; excluding soft-expired memory;
+supersession; unsupported-request abstention; and weak-evidence abstention.
+
+It reports pass rate, grounded-recommendation rate, and correct-abstention rate. The full request,
+source turns, expected IDs, selected IDs, and final response are retained in the JSON output.
+
 The 500-record importer reports exact local Postgres table and index bytes before and after a clean corpus import, including a per-relation row and storage delta.
 
 ## Current deterministic baseline
