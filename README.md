@@ -1,4 +1,13 @@
-# Kivi — evidence-first academic continuity
+<p align="center">
+  <img src="docs/assets/kivi-wordmark.svg" width="300" alt="kivi." />
+</p>
+
+<h1 align="center">Evidence-first academic continuity</h1>
+
+<p align="center">
+  A source-grounded memory system for deciding what deserves attention today.<br />
+  <a href="http://13.203.186.82/"><strong>Open the live demo →</strong></a>
+</p>
 
 Kivi is a local, end-to-end semantic-memory experience for one focused job:
 helping a student decide what deserves attention today without inventing a
@@ -9,6 +18,25 @@ This repository is the Part Two implementation for the Hey Kivi Golden Goose
 task. It is a working product with real local persistence, retrieval,
 corrections, lifecycle controls, model-assisted extraction, and reproducible
 evaluation—not a scripted demo.
+
+> **Live deployment:** [http://13.203.186.82/](http://13.203.186.82/)<br />
+> The hosted demo is a production Next.js build behind Nginx. It deliberately
+> uses HTTP while a custom domain and TLS certificate are not configured.
+
+## Product gallery
+
+<p align="center">
+  <img src="docs/screenshots/kivi-dashboard.png" alt="Kivi dashboard showing an evidence-backed next action and active memory" width="88%" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/kivi-capture.png" alt="Kivi capture flow showing explicit memory review and incognito control" width="44%" />
+  <img src="docs/screenshots/kivi-history.png" alt="Kivi decision history showing the source, evidence, and decision state" width="44%" />
+</p>
+
+The interface makes the safety model visible: capture is reviewed before it is
+saved, Incognito stays out of the memory system, and every retained or rejected
+item has an inspectable decision trail.
 
 ## What a person can do
 
