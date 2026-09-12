@@ -8,7 +8,7 @@ describe('provider extraction evaluation', () => {
         {
           id: 'deadline',
           transcript: {
-            occurredAt: '2026-09-11T09:00:00.000Z',
+            occurredAt: '2026-09-10T09:00:00.000Z',
             rawAsr: 'signals quiz due friday',
             formattedText: 'My Signals quiz is due Friday.',
             context: {},
@@ -18,7 +18,7 @@ describe('provider extraction evaluation', () => {
         {
           id: 'small-talk',
           transcript: {
-            occurredAt: '2026-09-11T09:01:00.000Z',
+            occurredAt: '2026-09-10T09:01:00.000Z',
             rawAsr: 'nice weather',
             formattedText: 'The weather is pleasant today.',
             context: {},
@@ -72,7 +72,7 @@ describe('provider extraction evaluation', () => {
         {
           id: 'bad-evidence',
           transcript: {
-            occurredAt: '2026-09-11T09:00:00.000Z',
+            occurredAt: '2026-09-10T09:00:00.000Z',
             rawAsr: 'signals quiz due friday',
             formattedText: 'My Signals quiz is due Friday.',
             context: {},

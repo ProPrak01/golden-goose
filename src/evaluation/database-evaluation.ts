@@ -104,7 +104,7 @@ async function insertFixtures() {
     const { data: transcript, error: transcriptError } = await database
       .from('transcripts')
       .insert({
-        occurred_at: '2026-09-11T11:00:00.000Z',
+        occurred_at: '2026-09-07T11:00:00.000Z',
         source_app: 'Evaluation fixture',
         raw_asr: fixture.transcript,
         formatted_text: fixture.transcript,

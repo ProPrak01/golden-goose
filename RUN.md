@@ -119,7 +119,7 @@ It creates the isolated `provider-audit-replay-v1` scope and writes
 An evaluator corpus is JSONL: one JSON object per transcript with `occurredAt`, `rawAsr`, and `formattedText`; `sourceApp` and `context` are optional. The provider importer requires `LLM_PROVIDER=sarvam` and `SARVAM_API`.
 
 ```json
-{"occurredAt":"2026-09-01T09:00:00.000Z","sourceApp":"Slack","rawAsr":"signals quiz due friday","formattedText":"My Signals quiz is due Friday.","context":{"project":"semester"}}
+{"occurredAt":"2026-09-07T09:00:00.000Z","sourceApp":"Slack","rawAsr":"signals quiz due friday","formattedText":"My Signals quiz is due Friday.","context":{"project":"semester"}}
 ```
 
 ```bash

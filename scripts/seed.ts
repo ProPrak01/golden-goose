@@ -9,7 +9,7 @@ loadEnvConfig(process.cwd());
 const seedCases = [
   {
     transcript: {
-      occurredAt: '2026-09-11T09:00:00.000Z',
+      occurredAt: '2026-09-05T09:00:00.000Z',
       sourceApp: 'Kivi',
       rawAsr: 'Controls assignment is due Friday.',
       formattedText: 'Controls assignment is due Friday.',
@@ -27,7 +27,7 @@ const seedCases = [
   },
   {
     transcript: {
-      occurredAt: '2026-09-11T09:05:00.000Z',
+      occurredAt: '2026-09-05T09:05:00.000Z',
       sourceApp: 'Kivi',
       rawAsr: 'I am lazy with assignments.',
       formattedText: 'I am lazy with assignments.',

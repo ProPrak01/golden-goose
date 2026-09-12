@@ -5,7 +5,7 @@ describe('extraction proposals', () => {
   it('turns explicit provider output into review-only proposals', () => {
     const proposals = createExtractionProposals(
       {
-        occurredAt: '2026-09-11T09:00:00.000Z',
+        occurredAt: '2026-09-09T09:00:00.000Z',
         sourceApp: 'Kivi',
         transcriptText: 'My Signals quiz is due Friday.',
       },
@@ -35,7 +35,7 @@ describe('extraction proposals', () => {
   it('keeps an inferred trait rejected instead of creating a durable proposal', () => {
     const proposals = createExtractionProposals(
       {
-        occurredAt: '2026-09-11T09:00:00.000Z',
+        occurredAt: '2026-09-09T09:00:00.000Z',
         sourceApp: 'Kivi',
         transcriptText: 'I missed the deadline.',
       },

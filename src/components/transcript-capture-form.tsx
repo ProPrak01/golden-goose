@@ -36,7 +36,7 @@ type ExtractionResponse = {
   modelRun: ModelRun;
 };
 
-const defaultOccurredAt = '2026-09-11T09:00';
+const defaultOccurredAt = '2026-09-06T09:00';
 
 export function TranscriptCaptureForm() {
   const [transcriptText, setTranscriptText] = useState('Controls assignment is due Friday.');

@@ -43,3 +43,5 @@ supabase/.branches/
 
 # Finder (MacOS) folder config
 .DS_Store
+docs/brain/positioning.md
+docs/brain/vision.md
