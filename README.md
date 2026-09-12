@@ -38,6 +38,13 @@ The interface makes the safety model visible: capture is reviewed before it is
 saved, Incognito stays out of the memory system, and every retained or rejected
 item has an inspectable decision trail.
 
+## Part One: positioning and vision
+
+The applicant-authored product positioning and vision are available as a
+[PDF](docs/part-one/positioning-and-vision.pdf). It defines Kivi's academic
+continuity use case, evidence-first memory boundary, user controls, and the
+principles that make the model applicable beyond students.
+
 ## What a person can do
 
 1. **Capture** a raw statement, ask Sarvam to suggest explicit memory candidates,
@@ -173,9 +180,8 @@ checks, user review, and provenance gates remain authoritative.
 **During development:** AI coding assistance was used for implementation and
 documentation iteration. The application behaviour, safety boundaries, local
 evaluation output, and test results were reviewed and verified in this
-repository. The Part One positioning and vision files under `docs/brain/` are
-reserved for the applicant's independent writing and intentionally remain
-unwritten here.
+repository. The Part One [positioning and vision PDF](docs/part-one/positioning-and-vision.pdf)
+is applicant-authored and kept separate from the implementation documentation.
 
 ## Repository map
 
@@ -183,3 +189,4 @@ unwritten here.
 - [Reviewer demo](docs/operations/reviewer-demo.md) — a concise walk-through.
 - [Evaluation plan](docs/evaluation/evaluation-plan.md) — metrics and corpus design.
 - [Assignment checklist](docs/requirements/assignment-checklist.md) — requirement traceability.
+- [Part One: positioning and vision](docs/part-one/positioning-and-vision.pdf) — applicant-authored product direction.
