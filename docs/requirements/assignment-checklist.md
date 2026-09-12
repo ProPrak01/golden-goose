@@ -46,7 +46,7 @@ This is the implementation and review checklist derived from the supplied assign
 
 ## Repository and reviewer requirements
 
-- [ ] Include applicant-authored positioning and vision documents. (Applicant-owned Part One work.)
+- [x] Include applicant-authored [positioning and vision](../part-one/positioning-and-vision.pdf) documents.
 - [x] Include complete source code, interface, backend, schema, migrations, seed data, corpus, evaluation, and generated results.
 - [x] Include a README covering product, architecture, use cases, limitations, results, and AI use.
 - [x] Include a RUN.md with one declared primary review method.
